@@ -4,9 +4,8 @@
 
 void control_player(Sprite* plr) {
     Vector2 move_dir = {0};
-    // TODO: Currently when you jump the jump force must overcome the gravity force because newtons third law is applied to the net force. Change that
     if (IsKeyDown(KEY_W) && plr->grounded)
-        apply_impulse_sprite(plr, (Vector2){0.f, -150.f});
+        apply_impulse_sprite(plr, (Vector2){0.f, -SPRITE_JUMP_STRENGTH});
     if (IsKeyDown(KEY_A))
         move_dir.x -= plr->mass * get_max_speed_sprite(plr) / SPRITE_ACCEL_TIME;
     if (IsKeyDown(KEY_D))
@@ -15,7 +14,7 @@ void control_player(Sprite* plr) {
         apply_impulse_sprite(plr, (Vector2){-1000.f, -100.f});
     if (IsKeyPressed(KEY_E))
         apply_impulse_sprite(plr, (Vector2){1000.f, -100.f});
-    if (IsKeyPressed(KEY_UP) && plr->mass < 50.f)
+    if (IsKeyPressed(KEY_UP) && plr->mass < SPRITE_MAX_MASS)
         plr->mass += 5.f;
     if (IsKeyPressed(KEY_DOWN) && plr->mass > 5.f)
         plr->mass -= 5.f;

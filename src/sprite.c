@@ -19,7 +19,7 @@ void apply_force_sprite(Sprite* spr, Vector2 force) {
     spr->velocity.x += force.x / spr->mass * GetFrameTime();
     spr->velocity.y += force.y / spr->mass * GetFrameTime();
     
-    float max_speed = -spr->mass + 50.f;
+    float max_speed = -spr->mass + SPRITE_MAX_MASS;
     if (spr->velocity.x > max_speed)
         spr->velocity.x = max_speed;
     else if (spr->velocity.x < -max_speed)
