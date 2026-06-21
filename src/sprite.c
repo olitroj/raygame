@@ -11,25 +11,18 @@ typedef struct sprite_s {
     bool grounded;
 } Sprite;
 
-float get_max_speed_sprite(Sprite *spr) {
-    return -spr->mass + SPRITE_MAX_MASS;
+float get_max_speed_sprite(float mass) {
+    return SPRITE_SPEED * (-mass + SPRITE_MAX_MASS);
 }
 
 void apply_force_sprite(Sprite* spr, Vector2 force) {
     spr->velocity.x += force.x / spr->mass * GetFrameTime();
     spr->velocity.y += force.y / spr->mass * GetFrameTime();
-    
-    // TODO: Make max_speed only for player movement, not other impulse forces
-    float max_speed = get_max_speed_sprite(spr);
-    if (spr->velocity.x > max_speed)
-        spr->velocity.x = max_speed;
-    else if (spr->velocity.x < -max_speed)
-        spr->velocity.x = -max_speed;
 }
 
 void apply_impulse_sprite(Sprite* spr, Vector2 force) {
-    spr->velocity.x += force.x / powf(spr->mass, SPRITE_IMPULSE_MASS_FACTOR);
-    spr->velocity.y += force.y / powf(spr->mass, SPRITE_IMPULSE_MASS_FACTOR);
+    spr->velocity.x += force.x / spr->mass;
+    spr->velocity.y += force.y / spr->mass;
 }
 
 void update_sprite(Sprite* spr, Level* level) {
@@ -71,11 +64,12 @@ void update_sprite(Sprite* spr, Level* level) {
             spr->velocity.y = 0.f;
             spr->grounded = true;
 
-            float fric_coeff = 5.f * get_max_speed_sprite(spr) * GetFrameTime();
+            // TODO: Better friction (only applied when player stops moving)
+            float fric_coeff = 12.f * spr->velocity.x * GetFrameTime();
             if (spr->velocity.x > 0.f)
-                spr->velocity.x = (spr->velocity.x > fric_coeff) ? spr->velocity.x - fric_coeff : 0.f;
+                spr->velocity.x -= (spr->velocity.x > fric_coeff) ? fric_coeff : 0.f;
             else if (spr->velocity.x < 0.f)
-                spr->velocity.x = (spr->velocity.x < -fric_coeff) ? spr->velocity.x + fric_coeff : 0.f;
+                spr->velocity.x -= (spr->velocity.x < -fric_coeff) ? fric_coeff : 0.f;
             break;
         }
     }

@@ -17,7 +17,7 @@ int main(void)
     Sprite plr = {
         (Vector2){l.start_x * TILE_SIZE, l.start_y * TILE_SIZE},
         (Vector2){50.f, 50.f},
-        30.f
+        13.f
     };
     Camera2D cam = {0};
 
