@@ -19,7 +19,8 @@ void apply_force_sprite(Sprite* spr, Vector2 force) {
     spr->velocity.x += force.x / spr->mass * GetFrameTime();
     spr->velocity.y += force.y / spr->mass * GetFrameTime();
     
-    float max_speed = -spr->mass + SPRITE_MAX_MASS;
+    // TODO: Make max_speed only for player movement, not other impulse forces
+    float max_speed = get_max_speed_sprite(spr);
     if (spr->velocity.x > max_speed)
         spr->velocity.x = max_speed;
     else if (spr->velocity.x < -max_speed)
@@ -78,8 +79,6 @@ void update_sprite(Sprite* spr, Level* level) {
             break;
         }
     }
-
-    printf("Vel: %f %f\n", spr->velocity.x, spr->velocity.y);
 
     spr->position.x = future_x;
     spr->position.y = future_y;

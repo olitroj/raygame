@@ -65,13 +65,15 @@ static int load_level(Level* level, unsigned char* ptr, unsigned char* end_ptr) 
     l.gravity = (float)gravity;
 
     int remaining_bytes = end_ptr + 1 - ptr;
-    if (l.width * l.height != remaining_bytes - l.height) // l.height removes newline byte the end of each row of tiles
+    // If there are less remaining bytes than there should be (width*height), fail since drawing would cause tile buffer overflow
+    // height-1 removes newlines at the end of each line from the calculation. -1 since the last line doesn't require one
+    if (l.width * l.height > remaining_bytes - (l.height-1))
         return -1;
 
     l.tiles = ptr;
 
     int push = 0;
-    while (ptr < end_ptr) {
+    while (ptr <= end_ptr) {
         if (*ptr == '\n')
             push++;
         else if (*(ptr-push) == '\n') {

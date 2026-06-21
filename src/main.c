@@ -17,7 +17,7 @@ int main(void)
     Sprite plr = {
         (Vector2){l.start_x * TILE_SIZE, l.start_y * TILE_SIZE},
         (Vector2){50.f, 50.f},
-        10.f
+        30.f
     };
     Camera2D cam = {0};
 
@@ -36,19 +36,21 @@ int main(void)
             ToggleBorderlessWindowed();
 
         BeginDrawing();
-        ClearBackground(RAYWHITE);
-        DrawFPS(10, 10);
-        
-        char buf[10] = {0};
-        sprintf(buf, "Mass: %2.1f", plr.mass);
-        DrawText(buf, 10, 100, 20, RED);
+            ClearBackground(RAYWHITE);
 
-        BeginMode2D(cam);
-        draw_level(&l);
-        draw_sprite(&plr, false);
-        
+            BeginMode2D(cam);
+                draw_level(&l);
+                draw_sprite(&plr, false);
+            EndMode2D();
 
-        EndMode2D();
+            DrawFPS(10, 10);
+            DrawText(l.name, 10, 40, 20, RED);
+            char buf[32] = {0};
+            sprintf(buf, "Mass: %2.1f", plr.mass);
+            DrawText(buf, 10, 70, 20, RED);
+            char buf2[32] = {0};
+            sprintf(buf, "Velocity: %2.1f %2.1f", plr.velocity.x, plr.velocity.y);
+            DrawText(buf, 10, 100, 20, RED);
         EndDrawing();
     }
 

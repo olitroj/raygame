@@ -2,6 +2,7 @@
 
 #include "defs.h"
 
+// TODO: Make small masse have less max speed
 void control_player(Sprite* plr) {
     Vector2 move_dir = {0};
     if (IsKeyDown(KEY_W) && plr->grounded)
