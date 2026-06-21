@@ -9,7 +9,7 @@ SRCS	:= main.c
 LEVELS	:= level0
 
 ifeq ($(PLATFORM),win64)
-    LIBS := raylib gdi32 opengl32 winmm
+    LIBS := raylib gdi32 opengl32 winmm m
 	EXEC := pe-x86-64
 endif
 
