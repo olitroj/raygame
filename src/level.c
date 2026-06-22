@@ -2,8 +2,8 @@
 
 #include "defs.h"
 
-extern const unsigned char _binary_assets_levels_level0_start[];
-extern const unsigned char _binary_assets_levels_level0_end[];
+extern const unsigned char _binary_assets_levels_level0_level_start[];
+extern const unsigned char _binary_assets_levels_level0_level_end[];
 
 typedef struct level_s {
     char* name;
@@ -18,8 +18,8 @@ typedef struct level_s {
 static unsigned char* get_string(unsigned char** ptr, unsigned char* end_ptr) {
     unsigned char* start = *ptr;
     while (*ptr <= end_ptr) {
-        if (**ptr == '\n') {
-            *((*ptr)++) = '\0';
+        if (**ptr == '\0') {
+            (*ptr)++;
             return start;
         } else if (*ptr == end_ptr)
             break;
@@ -30,8 +30,8 @@ static unsigned char* get_string(unsigned char** ptr, unsigned char* end_ptr) {
 
 static int get_integer(unsigned char** ptr, unsigned char* end_ptr, int* value) {
     while (*ptr <= end_ptr) {
-        if (**ptr == '\n') {
-            *((*ptr)++) = '\0';
+        if (**ptr == '\0') {
+            (*ptr)++;
             return 0;
         } else if (*ptr == end_ptr)
             break;
@@ -47,6 +47,11 @@ static int get_integer(unsigned char** ptr, unsigned char* end_ptr, int* value) 
 static int load_level(Level* level, unsigned char* ptr, unsigned char* end_ptr) {
     Level l = {0};
     l.bytes = ptr;
+
+    if (end_ptr <= ptr || !(*ptr == 0xA0 && *(ptr+1) == 0x43))
+        return -1;
+
+    ptr += 2;
 
     if ((l.name = get_string(&ptr, end_ptr)) == NULL)
         return -1;
@@ -66,22 +71,10 @@ static int load_level(Level* level, unsigned char* ptr, unsigned char* end_ptr) 
 
     int remaining_bytes = end_ptr + 1 - ptr;
     // If there are less remaining bytes than there should be (width*height), fail since drawing would cause tile buffer overflow
-    // height-1 removes newlines at the end of each line from the calculation. -1 since the last line doesn't require one
-    if (l.width * l.height > remaining_bytes - (l.height-1))
+    if (l.width * l.height > remaining_bytes)
         return -1;
 
     l.tiles = ptr;
-
-    int push = 0;
-    while (ptr <= end_ptr) {
-        if (*ptr == '\n')
-            push++;
-        else if (*(ptr-push) == '\n') {
-            *(ptr-push) = *ptr;
-            *ptr = '\n';
-        }
-        ptr++;
-    }
 
     *level = l;
     return 0;
@@ -108,7 +101,7 @@ int load_level_from_bin(Level* level, int level_no) {
         return -1;
 
     switch (level_no) {
-        case 0: return load_level(level, _binary_assets_levels_level0_start, _binary_assets_levels_level0_end-1);
+        case 0: return load_level(level, _binary_assets_levels_level0_level_start, _binary_assets_levels_level0_level_end-1);
         default: return -1;
     }
 }
