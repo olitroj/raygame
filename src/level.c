@@ -2,21 +2,21 @@
 
 #include "defs.h"
 
-extern const unsigned char _binary_assets_levels_level0_level_start[];
-extern const unsigned char _binary_assets_levels_level0_level_end[];
+extern const unsigned char _binary_assets_levels_level0_start[];
+extern const unsigned char _binary_assets_levels_level0_end[];
 
 typedef struct level_s {
-    char* name;
+    const char* name;
     unsigned int width, height;
     unsigned int start_x, start_y;
     float gravity;
-    unsigned char* tiles;
+    const unsigned char* tiles;
 
-    unsigned char* bytes;
+    const unsigned char* bytes;
 } Level;
 
-static unsigned char* get_string(unsigned char** ptr, unsigned char* end_ptr) {
-    unsigned char* start = *ptr;
+static const unsigned char* get_string(const unsigned char** ptr, const unsigned char* end_ptr) {
+    const unsigned char* start = *ptr;
     while (*ptr <= end_ptr) {
         if (**ptr == '\0') {
             (*ptr)++;
@@ -28,7 +28,7 @@ static unsigned char* get_string(unsigned char** ptr, unsigned char* end_ptr) {
     return NULL;
 }
 
-static int get_integer(unsigned char** ptr, unsigned char* end_ptr, int* value) {
+static int get_integer(const unsigned char** ptr, const unsigned char* end_ptr, int* value) {
     while (*ptr <= end_ptr) {
         if (**ptr == '\0') {
             (*ptr)++;
@@ -44,7 +44,7 @@ static int get_integer(unsigned char** ptr, unsigned char* end_ptr, int* value) 
     return -1;
 }
 
-static int load_level(Level* level, unsigned char* ptr, unsigned char* end_ptr) {
+static int load_level(Level* level, const unsigned char* ptr, const unsigned char* end_ptr) {
     Level l = {0};
     l.bytes = ptr;
 
@@ -93,7 +93,7 @@ int load_level_from_file(Level* level, const char* file_name) {
 }
 
 void free_level_from_file(Level* level) {
-    UnloadFileData(level->bytes);
+    UnloadFileData((unsigned char*)level->bytes);
 }
 
 int load_level_from_bin(Level* level, int level_no) {
@@ -101,7 +101,7 @@ int load_level_from_bin(Level* level, int level_no) {
         return -1;
 
     switch (level_no) {
-        case 0: return load_level(level, _binary_assets_levels_level0_level_start, _binary_assets_levels_level0_level_end-1);
+        case 0: return load_level(level, _binary_assets_levels_level0_start, _binary_assets_levels_level0_end-1);
         default: return -1;
     }
 }

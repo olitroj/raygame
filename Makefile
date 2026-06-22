@@ -17,12 +17,12 @@ INC_PATHS	:= $(addprefix -I,$(wildcard deps/$(PLATFORM)/*/include))
 LIB_PATHS	:= $(addprefix -L,$(wildcard deps/$(PLATFORM)/*/lib))
 
 all: $(LEVEL_PATHS)
-	$(CC) src/main.c $(LEVEL_PATHS) $(INC_PATHS) $(LIB_PATHS) $(addprefix -l,$(LIBS)) -o bin/$(BIN_NAME) -std=$(STD)
+	$(CC) src/main.c $(LEVEL_PATHS) $(INC_PATHS) $(LIB_PATHS) $(addprefix -l,$(LIBS)) -std=$(STD) -o bin/$(BIN_NAME)
 
-bin/%.obj: assets/levels/%.level | bin/
+bin/%.obj: assets/levels/% | bin/
 	objcopy -I binary -O $(EXEC) -B $(ARCH) $< $@
 
-assets/levels/%.level: assets/levels/%
+assets/levels/%: assets/levels/%.level
 	python scripts/compile_assets.py $<
 
 bin/:

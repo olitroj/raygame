@@ -5,6 +5,7 @@ if len(argv) < 2:
 
 values_until_tilemap = 6
 
+# TODO: Convert ASCII numbers into binary
 for file_path in argv[1:]:
     with open(file_path, "rb") as map_file:
         value = 0
@@ -16,5 +17,5 @@ for file_path in argv[1:]:
             elif c != ord('\n'):
                 result.append(c)
 
-        with open(file_path + ".level", "wb") as result_file:
+        with open(file_path.removesuffix(".level"), "wb") as result_file:
             result_file.write(result)
