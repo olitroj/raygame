@@ -112,11 +112,11 @@ void draw_level(Level* level) {
             unsigned char tile_id = level->tiles[col + row*level->width];
             Color c;
             switch (tile_id) {
-                case '1': c = RED; break;
-                case '2': c = GREEN; break;
-                case '3': c = BLUE; break;
-                case '4': c = YELLOW; break;
-                case '5': c = PINK; break;
+                case 1: c = RED; break;
+                case 2: c = GREEN; break;
+                case 3: c = BLUE; break;
+                case 4: c = YELLOW; break;
+                case 5: c = PINK; break;
                 default: continue;
             }
 

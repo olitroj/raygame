@@ -28,7 +28,7 @@ bin/%$(OBJ_EXT): assets/levels/% | bin/
 	objcopy -I binary -O $(EXEC) -B i386:x86-64 $< $@
 
 assets/levels/%: assets/levels/%.level
-	python3 scripts/compile_assets.py $<
+	python3 scripts/compile_level.py $<
 
 bin/:
 	mkdir -p bin
