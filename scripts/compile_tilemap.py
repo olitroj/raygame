@@ -5,13 +5,21 @@ if len(argv) < 2:
     print("ERROR: compile_tilemap.py: No tilemap directory provided!")
     exit()
 
+def key_func(x):
+    name = os.path.splitext(x)[0]
+    try:
+        return int(name)
+    except ValueError:
+        return float('inf')  # pushes non-numbers to the end
+
 for dir_path in argv[1:]:
     meta_buffer = bytearray([0xA0, 0x44])
     texture_buffer = bytearray()
     tilemap_name = ""
     parent_dir = os.path.dirname(dir_path)
     
-    for file in os.listdir(dir_path):
+    for file in sorted(os.listdir(dir_path), key=key_func):
+        print(file)
 
         if file.endswith(".txt"):
             tilemap_name = file.removesuffix(".txt")
@@ -43,7 +51,8 @@ for dir_path in argv[1:]:
                 row_size = width * 4
 
                 for y in range(height):
-                    row = raw[y * row_size:(y + 1) * row_size]
+                    src_y = height - 1 - y
+                    row = raw[src_y * row_size:(src_y + 1) * row_size]
 
                     for i in range(0, len(row), 4):
                         b, g, r, a = row[i:i+4]

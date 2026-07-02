@@ -25,7 +25,7 @@ void apply_impulse_sprite(Sprite* spr, Vector2 force) {
     spr->velocity.y += force.y / spr->mass;
 }
 
-void update_sprite(Sprite* spr, Level* level) {
+void update_sprite(Sprite* spr, Level* level, Tilemap* tilemap) {
     float future_x = spr->position.x + spr->velocity.x * TILE_SIZE * GetFrameTime();
     float future_y = spr->position.y + spr->velocity.y * TILE_SIZE * GetFrameTime();
             
@@ -35,12 +35,12 @@ void update_sprite(Sprite* spr, Level* level) {
     int top_tile = (int)(spr->position.y - spr->size.y/2.f)/TILE_SIZE;
     int bottom_tile = (int)(spr->position.y + spr->size.y/2.f)/TILE_SIZE;
     for (int y = top_tile; y <= bottom_tile; y++) {
-        if (level->tiles[left_tile + level->width*y] != TILE_AIR) {
+        if (tilemap->tile_props[level->tiles[left_tile + level->width*y]].solid) {
             future_x = (left_tile+1)*TILE_SIZE + spr->size.x/2.f + SPRITE_COLLISION_OFFSET;
             spr->velocity.x = 0.f;
             break;
         }
-        else if (level->tiles[right_tile + level->width*y] != TILE_AIR) {
+        else if (tilemap->tile_props[level->tiles[right_tile + level->width*y]].solid) {
             future_x = right_tile*TILE_SIZE - spr->size.x/2.f - SPRITE_COLLISION_OFFSET;
             spr->velocity.x = 0.f;
             break;
@@ -54,12 +54,12 @@ void update_sprite(Sprite* spr, Level* level) {
     top_tile = (int)(future_y - spr->size.y/2.f)/TILE_SIZE;
     bottom_tile = (int)(future_y + spr->size.y/2.f)/TILE_SIZE;
     for (int x = left_tile; x <= right_tile; x++) {
-        if (level->tiles[x + level->width*top_tile] != TILE_AIR) {
+        if (tilemap->tile_props[level->tiles[x + level->width*top_tile]].solid) {
             future_y = (top_tile+1)*TILE_SIZE + spr->size.y/2.f + SPRITE_COLLISION_OFFSET;
             spr->velocity.y = 0.f;
             break;
         }
-        else if (level->tiles[x + level->width*bottom_tile] != TILE_AIR) {
+        else if (tilemap->tile_props[level->tiles[x + level->width*bottom_tile]].solid) {
             future_y = bottom_tile*TILE_SIZE - spr->size.y/2.f - SPRITE_COLLISION_OFFSET;
             spr->velocity.y = 0.f;
             spr->grounded = true;

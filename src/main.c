@@ -2,6 +2,8 @@
 #include "raylib.h"
 
 #include "defs.h"
+#include "util.c"
+#include "tilemap.c"
 #include "level.c"
 #include "sprite.c"
 #include "controller.c"
@@ -13,6 +15,9 @@ int main(void)
     Level l = {0};
     load_level_from_bin(&l, 0);
     printf("LEVEL: %s\nSize: (%d %d) Start: (%d %d) Gravity: %f Tilemap ID: %d\n", l.name, l.width, l.height, l.start_x, l.start_y, l.gravity, l.tilemap_id);
+
+    Tilemap t = {0};
+    load_tilemap_from_bin(&t, l.tilemap_id);
 
     Sprite plr = {
         (Vector2){l.start_x * TILE_SIZE, l.start_y * TILE_SIZE},
@@ -28,7 +33,7 @@ int main(void)
     {
         apply_force_sprite(&plr, (Vector2){0.f, plr.mass * l.gravity});
         control_player(&plr);
-        update_sprite(&plr, &l);
+        update_sprite(&plr, &l, &t);
 
         focus_camera_sprite(&plr, &cam);
 
@@ -39,8 +44,8 @@ int main(void)
             ClearBackground(RAYWHITE);
 
             BeginMode2D(cam);
-                draw_level(&l);
                 draw_sprite(&plr, false);
+                draw_level(&l, &t);
             EndMode2D();
 
             DrawFPS(10, 10);

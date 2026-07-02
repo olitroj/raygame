@@ -16,62 +16,34 @@ typedef struct level_s {
     const unsigned char* bytes;
 } Level;
 
-static const unsigned char* get_string(const unsigned char** ptr, const unsigned char* end_ptr) {
-    const unsigned char* start = *ptr;
-    while (*ptr <= end_ptr) {
-        if (**ptr == '\0') {
-            (*ptr)++;
-            return start;
-        } else if (*ptr == end_ptr)
-            break;
-        (*ptr)++;
-    }
-    return NULL;
-}
-
-static int get_integer(const unsigned char** ptr, const unsigned char* end_ptr, int* value) {
-    while (*ptr <= end_ptr) {
-        if (**ptr == '\0') {
-            (*ptr)++;
-            return 0;
-        } else if (*ptr == end_ptr)
-            break;
-        int digit = **ptr - 48; // ASCII offset
-        if (digit > 9 || digit < 0)
-            break;
-        *value = *value * 10 + digit;
-        (*ptr)++;
-    }
-    return -1;
-}
-
 static int load_level(Level* level, const unsigned char* ptr, const unsigned char* end_ptr) {
     Level l = {0};
     l.bytes = ptr;
 
-    if (end_ptr <= ptr || !(*ptr == 0xA0 && *(ptr+1) == 0x43))
+    unsigned char byte = 0;
+    if (read_byte(&ptr, end_ptr, &byte) == -1 || byte != 0xA0)
+        return -1;
+    if (read_byte(&ptr, end_ptr, &byte) == -1 || byte != 0x43)
         return -1;
 
-    ptr += 2;
-
-    if ((l.name = get_string(&ptr, end_ptr)) == NULL)
+    if ((l.name = read_string(&ptr, end_ptr)) == NULL)
         return -1;
-    if (get_integer(&ptr, end_ptr, &(l.width)) == -1)
+    if (read_integer_from_ascii(&ptr, end_ptr, &(l.width)) == -1)
         return -1;
-    if (get_integer(&ptr, end_ptr, &(l.height)) == -1)
+    if (read_integer_from_ascii(&ptr, end_ptr, &(l.height)) == -1)
         return -1;
-    if (get_integer(&ptr, end_ptr, &(l.start_x)) == -1)
+    if (read_integer_from_ascii(&ptr, end_ptr, &(l.start_x)) == -1)
         return -1;
-    if (get_integer(&ptr, end_ptr, &(l.start_y)) == -1)
+    if (read_integer_from_ascii(&ptr, end_ptr, &(l.start_y)) == -1)
         return -1;
         
     int gravity = 0;
-    if (get_integer(&ptr, end_ptr, &(gravity)) == -1)
+    if (read_integer_from_ascii(&ptr, end_ptr, &(gravity)) == -1)
         return -1;
     l.gravity = (float)gravity;
-    
+
     int tilemap_id = 0;
-    if (get_integer(&ptr, end_ptr, &(tilemap_id)) == -1)
+    if (read_integer_from_ascii(&ptr, end_ptr, &(tilemap_id)) == -1)
         return -1;
     l.tilemap_id = (char)tilemap_id;
 
@@ -112,21 +84,17 @@ int load_level_from_bin(Level* level, int level_no) {
     }
 }
 
-void draw_level(Level* level) {
+void draw_level(Level* level, Tilemap* tilemap) {
+    if (level == NULL || tilemap == NULL)
+        return;
+
     for (int row = 0; row < level->height; row++) {
         for (int col = 0; col < level->width; col++) {
             unsigned char tile_id = level->tiles[col + row*level->width];
-            Color c;
-            switch (tile_id) {
-                case 1: c = RED; break;
-                case 2: c = GREEN; break;
-                case 3: c = BLUE; break;
-                case 4: c = YELLOW; break;
-                case 5: c = PINK; break;
-                default: continue;
-            }
+            if (tile_id == TILE_AIR)
+                continue;
 
-            DrawRectangle(col*TILE_SIZE, row*TILE_SIZE, TILE_SIZE, TILE_SIZE, c);
+            DrawTextureEx(tilemap->tile_props[tile_id].texture, (Vector2){col*TILE_SIZE, row*TILE_SIZE}, 0.0f, (float)TILE_SIZE / (float)tilemap->tile_props[tile_id].size, WHITE);
         }
     }
 }
