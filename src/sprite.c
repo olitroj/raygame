@@ -35,12 +35,12 @@ void update_sprite(Sprite* spr, Level* level) {
     int top_tile = (int)(spr->position.y - spr->size.y/2.f)/TILE_SIZE;
     int bottom_tile = (int)(spr->position.y + spr->size.y/2.f)/TILE_SIZE;
     for (int y = top_tile; y <= bottom_tile; y++) {
-        if (level->tiles[left_tile + level->width*y]) {
+        if (level->tiles[left_tile + level->width*y] != TILE_AIR) {
             future_x = (left_tile+1)*TILE_SIZE + spr->size.x/2.f + SPRITE_COLLISION_OFFSET;
             spr->velocity.x = 0.f;
             break;
         }
-        else if (level->tiles[right_tile + level->width*y]) {
+        else if (level->tiles[right_tile + level->width*y] != TILE_AIR) {
             future_x = right_tile*TILE_SIZE - spr->size.x/2.f - SPRITE_COLLISION_OFFSET;
             spr->velocity.x = 0.f;
             break;
@@ -54,12 +54,12 @@ void update_sprite(Sprite* spr, Level* level) {
     top_tile = (int)(future_y - spr->size.y/2.f)/TILE_SIZE;
     bottom_tile = (int)(future_y + spr->size.y/2.f)/TILE_SIZE;
     for (int x = left_tile; x <= right_tile; x++) {
-        if (level->tiles[x + level->width*top_tile]) {
+        if (level->tiles[x + level->width*top_tile] != TILE_AIR) {
             future_y = (top_tile+1)*TILE_SIZE + spr->size.y/2.f + SPRITE_COLLISION_OFFSET;
             spr->velocity.y = 0.f;
             break;
         }
-        else if (level->tiles[x + level->width*bottom_tile]) {
+        else if (level->tiles[x + level->width*bottom_tile] != TILE_AIR) {
             future_y = bottom_tile*TILE_SIZE - spr->size.y/2.f - SPRITE_COLLISION_OFFSET;
             spr->velocity.y = 0.f;
             spr->grounded = true;

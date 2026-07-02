@@ -1,7 +1,8 @@
 #ifndef DEFS
 #define DEFS
 
-#define TILE_SIZE 30
+#define TILE_SIZE   30
+#define TILE_AIR    255
 
 #define SPRITE_SPEED                3.0f        // General factor for sprite speed
 #define SPRITE_JUMP_STRENGTH        1000.f      // Magnitude of upwards jump force

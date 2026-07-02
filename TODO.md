@@ -6,7 +6,8 @@
     - Instead of checking collision only at future position, check collision between current and future position.
 - [ ] Improve friction.
     - Friction is applied every frame by removing some velocity if the sprite is moving and grounded. This causes the sprite to never reach it's max speed when grounded, and get a speed boost when jumping. Is this desiered behaviour?
-- [ ] Have sprite horizontal acceleration time depend on current gravity.
+- [ ] Improve sprite horizontal acceleration
+    - Reduce the acceleration when the sprite is not grounded, so that it is harder for sprites to change direction while mid air.
 
 ## Complete
 

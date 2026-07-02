@@ -21,8 +21,8 @@ for file_path in argv[1:]:
                     result.append(c)
 
             elif trait == 6 and c != new_line:
-                result.append(c - ord('0') if c != ord(' ') else 0)
+                result.append(c - ord('0') if c != ord(' ') else 255)
                 
 
-        with open(file_path.removesuffix(".level"), "wb") as result_file:
+        with open(file_path.split(".")[0], "wb") as result_file:
             result_file.write(result)

@@ -21,17 +21,17 @@ LIB_PATHS	:= $(addprefix -L,$(wildcard deps/$(PLATFORM)/*/lib))
 all: start $(LEVEL_PATHS)
 	gcc src/main.c $(LEVEL_PATHS) $(INC_PATHS) $(LIB_PATHS) $(addprefix -l,$(LIBS)) -std=$(STD) -o bin/$(BIN_NAME)
 
-start:
-	@echo === Building for $(PLATFORM) ===
-
 bin/%$(OBJ_EXT): assets/levels/% | bin/
 	objcopy -I binary -O $(EXEC) -B i386:x86-64 $< $@
 
-assets/levels/%: assets/levels/%.level
+assets/levels/%: assets/levels/%.txt
 	python3 scripts/compile_level.py $<
 
+start:
+	@echo === Building for $(PLATFORM) ===
+
 bin/:
-	mkdir -p bin
+	mkdir -p $@
 
 clean:
 	rm -rf bin
