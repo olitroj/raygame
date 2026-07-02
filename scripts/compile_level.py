@@ -4,23 +4,26 @@ if len(argv) < 2:
     print("ERROR: compile_level.py: No level file provided!")
     exit()
 
-tile_map_start = 6
 new_line = ord('\n')
 
 for file_path in argv[1:]:
-    with open(file_path, "rb") as map_file:
-        trait = 0
-        result = bytearray([0xA0, 0x43])
+    traits = True
+    prev_newline = False
 
+    with open(file_path, "rb") as map_file:
+        result = bytearray([0xA0, 0x43])
         for c in map_file.read():
-            if trait < 6:
-                if c == new_line:
+            if traits:
+                if c == new_line and prev_newline:
+                    traits = False
+                elif c == new_line:
                     result.append(0)
-                    trait += 1
+                    prev_newline = True
                 else:
                     result.append(c)
+                    prev_newline = False
 
-            elif trait == 6 and c != new_line:
+            elif c != new_line:
                 result.append(c - ord('0') if c != ord(' ') else 255)
                 
 

@@ -12,7 +12,7 @@ int main(void)
 
     Level l = {0};
     load_level_from_bin(&l, 0);
-    printf("LEVEL: %s Size: (%d %d) Start: (%d %d) Gravity: %f\n", l.name, l.width, l.height, l.start_x, l.start_y, l.gravity);
+    printf("LEVEL: %s\nSize: (%d %d) Start: (%d %d) Gravity: %f Tilemap ID: %d\n", l.name, l.width, l.height, l.start_x, l.start_y, l.gravity, l.tilemap_id);
 
     Sprite plr = {
         (Vector2){l.start_x * TILE_SIZE, l.start_y * TILE_SIZE},

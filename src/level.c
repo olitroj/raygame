@@ -10,6 +10,7 @@ typedef struct level_s {
     unsigned int width, height;
     unsigned int start_x, start_y;
     float gravity;
+    unsigned char tilemap_id;
     const unsigned char* tiles;
 
     const unsigned char* bytes;
@@ -68,6 +69,11 @@ static int load_level(Level* level, const unsigned char* ptr, const unsigned cha
     if (get_integer(&ptr, end_ptr, &(gravity)) == -1)
         return -1;
     l.gravity = (float)gravity;
+    
+    int tilemap_id = 0;
+    if (get_integer(&ptr, end_ptr, &(tilemap_id)) == -1)
+        return -1;
+    l.tilemap_id = (char)tilemap_id;
 
     int remaining_bytes = end_ptr + 1 - ptr;
     // If there are less remaining bytes than there should be (width*height), fail since drawing would cause tile buffer overflow
