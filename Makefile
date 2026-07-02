@@ -1,5 +1,6 @@
 BIN_NAME	:= game
 LEVELS		:= level0
+TILEMAPS	:= summer
 PLATFORM	:= windows
 STD			:= c11
 
@@ -14,25 +15,28 @@ else ifeq ($(PLATFORM),linux)
 	OBJ_EXT := .o
 endif
 
-LEVEL_PATHS	:= $(addsuffix $(OBJ_EXT),$(addprefix bin/,$(LEVELS)))
+LEVEL_PATHS	:= $(addsuffix $(OBJ_EXT),$(addprefix bin/l_,$(LEVELS)))
+TILE_PATHS	:= $(addsuffix $(OBJ_EXT),$(addprefix bin/t_,$(TILEMAPS)))
 INC_PATHS	:= $(addprefix -I,$(wildcard deps/$(PLATFORM)/*/include))
 LIB_PATHS	:= $(addprefix -L,$(wildcard deps/$(PLATFORM)/*/lib))
 
-all: start $(LEVEL_PATHS)
-	gcc src/main.c $(LEVEL_PATHS) $(INC_PATHS) $(LIB_PATHS) $(addprefix -l,$(LIBS)) -std=$(STD) -o bin/$(BIN_NAME)
+all: start $(LEVEL_PATHS) $(TILE_PATHS)
+	gcc src/main.c $(LEVEL_PATHS) $(TILE_PATHS) $(INC_PATHS) $(LIB_PATHS) $(addprefix -l,$(LIBS)) -std=$(STD) -o bin/$(BIN_NAME)
 
-bin/%$(OBJ_EXT): assets/levels/% | bin/
+bin/l_%$(OBJ_EXT): assets/levels/% | bin
 	objcopy -I binary -O $(EXEC) -B i386:x86-64 $< $@
-
 assets/levels/%: assets/levels/%.txt
 	python3 scripts/compile_level.py $<
 
+bin/t_%$(OBJ_EXT): assets/tilemaps/% | bin
+	objcopy -I binary -O $(EXEC) -B i386:x86-64 $< $@
+assets/tilemaps/%: assets/tilemaps/%.assets
+	python3 scripts/compile_tilemap.py $<
+
 start:
 	@echo === Building for $(PLATFORM) ===
-
-bin/:
+bin:
 	mkdir -p $@
-
 clean:
 	rm -rf bin
 
