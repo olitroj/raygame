@@ -1,6 +1,7 @@
-#include "raylib.h"
+#include "controller.h"
 
 #include "defs.h"
+#include "raylib.h"
 
 // TODO: Maybe make SPRIE_ACCEL_TIME dependent on the gravity
 void control_player(Sprite* plr) {

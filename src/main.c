@@ -2,11 +2,10 @@
 #include "raylib.h"
 
 #include "defs.h"
-#include "util.c"
-#include "tilemap.c"
-#include "level.c"
-#include "sprite.c"
-#include "controller.c"
+#include "level.h"
+#include "tilemap.h"
+#include "sprite.h"
+#include "controller.h"
 
 int main(void)
 {
@@ -63,3 +62,9 @@ int main(void)
 
     return 0;
 }
+
+#include "level.c"
+#include "tilemap.c"
+#include "sprite.c"
+#include "controller.c"
+#include "util.c"

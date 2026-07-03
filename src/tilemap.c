@@ -1,23 +1,12 @@
-#include <stdint.h>
-#include "raylib.h"
+#include "tilemap.h"
 
 #include "defs.h"
+#include "util.h"
 
 extern const unsigned char _binary_assets_t_summer_start[];
 extern const unsigned char _binary_assets_t_summer_end[];
 
-typedef struct tile_props_s {
-    unsigned char friction;
-    unsigned char solid;
-    Texture2D texture;
-} TileProps;
-
-typedef struct tilemap_s {
-    unsigned char id;
-    TileProps tile_props[256];
-} Tilemap;
-
-static int load_tilemap(Tilemap* tilemap, const unsigned char* ptr, const unsigned char* end_ptr) {
+int load_tilemap(Tilemap* tilemap, const unsigned char* ptr, const unsigned char* end_ptr) {
     Tilemap t = {0};
 
     unsigned char byte = 0;

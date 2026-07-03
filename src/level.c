@@ -1,22 +1,13 @@
-#include "raylib.h"
+#include "level.h"
 
+#include "raylib.h"
 #include "defs.h"
+#include "util.h"
 
 extern const unsigned char _binary_assets_l_level0_start[];
 extern const unsigned char _binary_assets_l_level0_end[];
 
-typedef struct level_s {
-    const char* name;
-    unsigned int width, height;
-    unsigned int start_x, start_y;
-    float gravity;
-    unsigned char tilemap_id;
-    const unsigned char* tiles;
-
-    const unsigned char* bytes;
-} Level;
-
-static int load_level(Level* level, const unsigned char* ptr, const unsigned char* end_ptr) {
+int load_level(Level* level, const unsigned char* ptr, const unsigned char* end_ptr) {
     Level l = {0};
     l.bytes = ptr;
 

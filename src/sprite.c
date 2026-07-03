@@ -1,15 +1,6 @@
-#include <math.h>
-#include "raylib.h"
+#include "sprite.h"
 
 #include "defs.h"
-
-typedef struct sprite_s {
-    Vector2 position;
-    Vector2 size;
-    float mass;
-    Vector2 velocity;
-    bool grounded;
-} Sprite;
 
 float get_max_speed_sprite(float mass) {
     return SPRITE_SPEED * (-mass + SPRITE_MAX_MASS);
