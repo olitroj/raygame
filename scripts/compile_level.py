@@ -29,8 +29,10 @@ with open(file_path, "r") as map_file:
     result.extend(bytes(name, "ascii"))
 
     # Read values line
-    for value in lines.pop(0).split():
+    values = lines.pop(0).split()
+    for value in values[:-1]:
         result.extend(int(value).to_bytes(2, "little"))
+    result.extend(int(values[-1]).to_bytes())
 
     # Read tilemap
     for line in lines:

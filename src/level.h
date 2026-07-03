@@ -10,6 +10,7 @@ typedef struct level_s {
     uint16_t width, height;
     uint16_t start_x, start_y;
     float gravity;
+    unsigned char tile_size;
     const unsigned char* tiles;
 
     const unsigned char* bytes;

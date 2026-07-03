@@ -13,13 +13,13 @@ int main(void)
 
     Level l = {0};
     load_level_from_bin(&l, 0);
-    printf("LEVEL: %s\nSize: (%d %d) Start: (%d %d) Gravity: %f Tilemap ID: %d\n", l.name, l.width, l.height, l.start_x, l.start_y, l.gravity, l.tilemap_id);
+    printf("LEVEL: %d Tilemap ID: %d\nName: (%s) Size: (%d %d) Start: (%d %d) Gravity: %f Tile size: %d\n", l.level_id, l.tilemap_id, l.name, l.width, l.height, l.start_x, l.start_y, l.gravity, l.tile_size);
 
     Tilemap t = {0};
     load_tilemap_from_bin(&t, l.tilemap_id);
 
     Sprite plr = {
-        (Vector2){l.start_x * TILE_SIZE, l.start_y * TILE_SIZE},
+        (Vector2){l.start_x * l.tile_size, l.start_y * l.tile_size},
         (Vector2){50.f, 50.f},
         13.f
     };
@@ -43,7 +43,7 @@ int main(void)
             ClearBackground(RAYWHITE);
 
             BeginMode2D(cam);
-                draw_sprite(&plr, false);
+                draw_sprite(&plr);
                 draw_level(&l, &t);
             EndMode2D();
 

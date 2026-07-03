@@ -38,6 +38,9 @@ int load_level(Level* level, const unsigned char* ptr, const unsigned char* end_
         return -1;
     l.gravity = (float)gravity;
 
+    if (read_byte(&ptr, end_ptr, &(l.tile_size)) == -1)
+        return -1;
+
     int remaining_bytes = end_ptr + 1 - ptr;
     // If there are less remaining bytes than there should be (width*height), fail since drawing would cause tile buffer overflow
     if (l.width * l.height > remaining_bytes)
@@ -86,7 +89,7 @@ void draw_level(Level* level, Tilemap* tilemap) {
                 continue;
 
             Texture2D texture = tilemap->tile_props[tile_id].texture;
-            DrawTextureEx(texture, (Vector2){col*TILE_SIZE, row*TILE_SIZE}, 0.0f, (float)TILE_SIZE / (float)texture.width, WHITE);
+            DrawTextureEx(texture, (Vector2){col*level->tile_size, row*level->tile_size}, 0.0f, (float)level->tile_size / (float)texture.width, WHITE);
         }
     }
 }
