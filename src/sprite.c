@@ -65,7 +65,7 @@ void update_sprite(Sprite* spr, Level* level, Tilemap* tilemap) {
             spr->grounded = true;
 
             // TODO: Better friction (only applied when player stops moving)
-            float fric_coeff = 12.f * spr->velocity.x * GetFrameTime();
+            float fric_coeff = (float)tilemap->tile_props[level->tiles[x + level->width*bottom_tile]].friction * spr->velocity.x * GetFrameTime();
             if (spr->velocity.x > 0.f)
                 spr->velocity.x -= (spr->velocity.x > fric_coeff) ? fric_coeff : 0.f;
             else if (spr->velocity.x < 0.f)
