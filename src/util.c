@@ -36,7 +36,15 @@ int read_byte(const unsigned char** ptr, const unsigned char* end_ptr, unsigned 
     return 0;
 }
 
-int read_uint32(const unsigned char** ptr, const unsigned char* end_ptr, uint32_t* integer) {
+int read_word(const unsigned char** ptr, const unsigned char* end_ptr, uint16_t* word) {
+    if (*ptr + 1 > end_ptr)
+        return -1;
+    *word = *(uint16_t*)(*ptr);
+    *ptr += 2;
+    return 0;
+}
+
+int read_int(const unsigned char** ptr, const unsigned char* end_ptr, uint32_t* integer) {
     if (*ptr + 3 > end_ptr)
         return -1;
     *integer = *(uint32_t*)(*ptr);

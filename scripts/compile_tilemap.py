@@ -22,9 +22,6 @@ with open(f"{dir_path}/meta.txt", "r") as meta_file:
 
     # Read tilemap ID
     tile_id = lines.pop(0)
-    if not tile_id.isnumeric() or int(tile_id) < 0 or int(tile_id) > 255:
-        print(f"ERROR: compile_tilemap.py: Tilemap ID must be 0-255 ({tile_id})!")
-        exit()
     buffer.extend(int(tile_id).to_bytes())
     
     # Read tile props
@@ -38,12 +35,7 @@ with open(f"{dir_path}/meta.txt", "r") as meta_file:
         elif texture_filename.endswith(".png"):
             tile_props.append(1)
 
-        # Convert to bytes
-        try:
-            buffer.extend([int(x) for x in tile_props])
-        except:
-            print(f"ERROR: compile_tilemap.py: Tile properties must be 0-255!")
-            exit()
+        buffer.extend([int(x) for x in tile_props])
 
         # Read texture file
         with open(f"{dir_path}/{texture_filename}", "rb") as texture_file:

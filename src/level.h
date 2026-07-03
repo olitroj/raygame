@@ -2,13 +2,14 @@
 #define LEVEL
 
 #include "tilemap.h"
+#include <stdint.h>
 
 typedef struct level_s {
+    unsigned char level_id, tilemap_id;
     const char* name;
-    unsigned int width, height;
-    unsigned int start_x, start_y;
+    uint16_t width, height;
+    uint16_t start_x, start_y;
     float gravity;
-    unsigned char tilemap_id;
     const unsigned char* tiles;
 
     const unsigned char* bytes;

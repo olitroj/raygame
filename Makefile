@@ -1,4 +1,4 @@
-BIN_NAME	:= game
+BIN_NAME	:= raygame
 LEVELS		:= level0
 TILEMAPS	:= summer
 PLATFORM	:= windows

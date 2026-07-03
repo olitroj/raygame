@@ -1,3 +1,3 @@
 0
-grass.bmp 12 0
-dirt.bmp 20 1
+grass.png 12 0
+dirt.png 20 1

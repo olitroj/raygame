@@ -27,7 +27,7 @@ int load_tilemap(Tilemap* tilemap, const unsigned char* ptr, const unsigned char
         if (read_byte(&ptr, end_ptr, &image_type) == -1)
             return -1;
         uint32_t image_size = 0;
-        if (read_uint32(&ptr, end_ptr, &image_size) == -1)
+        if (read_int(&ptr, end_ptr, &image_size) == -1)
             return -1;
 
         const char* type;

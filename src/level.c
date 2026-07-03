@@ -17,26 +17,26 @@ int load_level(Level* level, const unsigned char* ptr, const unsigned char* end_
     if (read_byte(&ptr, end_ptr, &byte) == -1 || byte != 0x43)
         return -1;
 
+    if (read_byte(&ptr, end_ptr, &(l.level_id)) == -1)
+        return -1;
+    if (read_byte(&ptr, end_ptr, &(l.tilemap_id)) == -1)
+        return -1;
+
     if ((l.name = read_string(&ptr, end_ptr)) == NULL)
         return -1;
-    if (read_integer_from_ascii(&ptr, end_ptr, &(l.width)) == -1)
+    if (read_word(&ptr, end_ptr, &(l.width)) == -1)
         return -1;
-    if (read_integer_from_ascii(&ptr, end_ptr, &(l.height)) == -1)
+    if (read_word(&ptr, end_ptr, &(l.height)) == -1)
         return -1;
-    if (read_integer_from_ascii(&ptr, end_ptr, &(l.start_x)) == -1)
+    if (read_word(&ptr, end_ptr, &(l.start_x)) == -1)
         return -1;
-    if (read_integer_from_ascii(&ptr, end_ptr, &(l.start_y)) == -1)
+    if (read_word(&ptr, end_ptr, &(l.start_y)) == -1)
         return -1;
         
-    int gravity = 0;
-    if (read_integer_from_ascii(&ptr, end_ptr, &(gravity)) == -1)
+    uint16_t gravity = 0;
+    if (read_word(&ptr, end_ptr, &(gravity)) == -1)
         return -1;
     l.gravity = (float)gravity;
-
-    int tilemap_id = 0;
-    if (read_integer_from_ascii(&ptr, end_ptr, &(tilemap_id)) == -1)
-        return -1;
-    l.tilemap_id = (char)tilemap_id;
 
     int remaining_bytes = end_ptr + 1 - ptr;
     // If there are less remaining bytes than there should be (width*height), fail since drawing would cause tile buffer overflow
