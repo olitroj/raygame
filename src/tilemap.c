@@ -18,8 +18,9 @@ int load_tilemap(Tilemap* tilemap, const unsigned char* ptr, const unsigned char
         return -1;
 
     for (int i = 0; i < 256; i++) {
-        if (read_byte(&ptr, end_ptr, &(t.tile_props[i].friction)) == -1)
+        if (read_byte(&ptr, end_ptr, &byte) == -1)
             return -1;
+        t.tile_props[i].friction = (float)byte;
         if (read_byte(&ptr, end_ptr, &(t.tile_props[i].solid)) == -1)
             return -1;
 

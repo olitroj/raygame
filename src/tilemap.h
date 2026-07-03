@@ -4,7 +4,7 @@
 #include "raylib.h"
 
 typedef struct tile_props_s {
-    unsigned char friction;
+    float friction;
     unsigned char solid;
     Texture2D texture;
 } TileProps;

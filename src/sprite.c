@@ -19,20 +19,25 @@ void apply_impulse_sprite(Sprite* spr, Vector2 force) {
 void update_sprite(Sprite* spr, Level* level, Tilemap* tilemap) {
     float future_x = spr->position.x + spr->velocity.x * TILE_SIZE * GetFrameTime();
     float future_y = spr->position.y + spr->velocity.y * TILE_SIZE * GetFrameTime();
+
+    float spr_hwidth = spr->size.x / 2.f;
+    float spr_hheight = spr->size.y / 2.f;
+
+    TileProps* tileprops = tilemap->tile_props;
             
     // Checks left and right edges with future x values for collision tiles
-    int left_tile = (int)(future_x - spr->size.x/2.f)/TILE_SIZE;
-    int right_tile = (int)(future_x + spr->size.x/2.f)/TILE_SIZE;
-    int top_tile = (int)(spr->position.y - spr->size.y/2.f)/TILE_SIZE;
-    int bottom_tile = (int)(spr->position.y + spr->size.y/2.f)/TILE_SIZE;
+    int left_tile = (int)(future_x - spr_hwidth) / TILE_SIZE;
+    int right_tile = (int)(future_x + spr_hwidth) / TILE_SIZE;
+    int top_tile = (int)(spr->position.y - spr_hheight) / TILE_SIZE;
+    int bottom_tile = (int)(spr->position.y + spr_hheight) / TILE_SIZE;
     for (int y = top_tile; y <= bottom_tile; y++) {
-        if (tilemap->tile_props[level->tiles[left_tile + level->width*y]].solid) {
-            future_x = (left_tile+1)*TILE_SIZE + spr->size.x/2.f + SPRITE_COLLISION_OFFSET;
+        if (tileprops[level->tiles[left_tile + level->width*y]].solid) {
+            future_x = (left_tile+1)*TILE_SIZE + spr_hwidth + SPRITE_COLLISION_OFFSET;
             spr->velocity.x = 0.f;
             break;
         }
-        else if (tilemap->tile_props[level->tiles[right_tile + level->width*y]].solid) {
-            future_x = right_tile*TILE_SIZE - spr->size.x/2.f - SPRITE_COLLISION_OFFSET;
+        else if (tileprops[level->tiles[right_tile + level->width*y]].solid) {
+            future_x = right_tile*TILE_SIZE - spr_hwidth - SPRITE_COLLISION_OFFSET;
             spr->velocity.x = 0.f;
             break;
         }
@@ -40,23 +45,23 @@ void update_sprite(Sprite* spr, Level* level, Tilemap* tilemap) {
 
     // Checks top and bottom edges with future y values for collision tiles
     spr->grounded = false;
-    left_tile = (int)(spr->position.x - spr->size.x/2.f)/TILE_SIZE;
-    right_tile = (int)(spr->position.x + spr->size.x/2.f)/TILE_SIZE;
-    top_tile = (int)(future_y - spr->size.y/2.f)/TILE_SIZE;
-    bottom_tile = (int)(future_y + spr->size.y/2.f)/TILE_SIZE;
+    left_tile = (int)(spr->position.x - spr_hwidth) / TILE_SIZE;
+    right_tile = (int)(spr->position.x + spr_hwidth) / TILE_SIZE;
+    top_tile = (int)(future_y - spr_hheight) / TILE_SIZE;
+    bottom_tile = (int)(future_y + spr_hheight) / TILE_SIZE;
     for (int x = left_tile; x <= right_tile; x++) {
-        if (tilemap->tile_props[level->tiles[x + level->width*top_tile]].solid) {
-            future_y = (top_tile+1)*TILE_SIZE + spr->size.y/2.f + SPRITE_COLLISION_OFFSET;
+        if (tileprops[level->tiles[x + level->width*top_tile]].solid) {
+            future_y = (top_tile+1)*TILE_SIZE + spr_hheight + SPRITE_COLLISION_OFFSET;
             spr->velocity.y = 0.f;
             break;
         }
-        else if (tilemap->tile_props[level->tiles[x + level->width*bottom_tile]].solid) {
-            future_y = bottom_tile*TILE_SIZE - spr->size.y/2.f - SPRITE_COLLISION_OFFSET;
+        else if (tileprops[level->tiles[x + level->width*bottom_tile]].solid) {
+            future_y = bottom_tile*TILE_SIZE - spr_hheight - SPRITE_COLLISION_OFFSET;
             spr->velocity.y = 0.f;
             spr->grounded = true;
 
             // TODO: Better friction (only applied when player stops moving)
-            float fric_coeff = (float)tilemap->tile_props[level->tiles[x + level->width*bottom_tile]].friction * spr->velocity.x * GetFrameTime();
+            float fric_coeff = tileprops[level->tiles[x + level->width*bottom_tile]].friction * spr->velocity.x * GetFrameTime();
             if (spr->velocity.x > 0.f)
                 spr->velocity.x -= (spr->velocity.x > fric_coeff) ? fric_coeff : 0.f;
             else if (spr->velocity.x < 0.f)
