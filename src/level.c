@@ -94,7 +94,8 @@ void draw_level(Level* level, Tilemap* tilemap) {
             if (tile_id == TILE_AIR)
                 continue;
 
-            DrawTextureEx(tilemap->tile_props[tile_id].texture, (Vector2){col*TILE_SIZE, row*TILE_SIZE}, 0.0f, (float)TILE_SIZE / (float)tilemap->tile_props[tile_id].size, WHITE);
+            Texture2D texture = tilemap->tile_props[tile_id].texture;
+            DrawTextureEx(texture, (Vector2){col*TILE_SIZE, row*TILE_SIZE}, 0.0f, (float)TILE_SIZE / (float)texture.width, WHITE);
         }
     }
 }

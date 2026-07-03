@@ -1,12 +1,12 @@
+#include <stdint.h>
 #include "raylib.h"
 
 #include "defs.h"
 
-extern const unsigned char _binary_assets_tilemaps_summer_start[];
-extern const unsigned char _binary_assets_tilemaps_summer_end[];
+extern const unsigned char _binary_assets_t_summer_start[];
+extern const unsigned char _binary_assets_t_summer_end[];
 
 typedef struct tile_props_s {
-    unsigned char size;
     unsigned char friction;
     unsigned char solid;
     Texture2D texture;
@@ -25,28 +25,27 @@ static int load_tilemap(Tilemap* tilemap, const unsigned char* ptr, const unsign
         return -1;
     if (read_byte(&ptr, end_ptr, &byte) == -1 || byte != 0x44)
         return -1;
-
     if (read_byte(&ptr, end_ptr, &(t.id)) == -1)
         return -1;
-    unsigned char tile_count = 0;
-    if (read_byte(&ptr, end_ptr, &tile_count) == -1)
-        return -1;
 
-    const unsigned char* color_ptr = ptr + 3*tile_count;
-
-    for (int i = 0; i < tile_count; i++) {
-        if (read_byte(&ptr, end_ptr, &(t.tile_props[i].size)) == -1)
-            return -1;
+    for (int i = 0; i < 256; i++) {
         if (read_byte(&ptr, end_ptr, &(t.tile_props[i].friction)) == -1)
             return -1;
         if (read_byte(&ptr, end_ptr, &(t.tile_props[i].solid)) == -1)
             return -1;
 
-        Image image = { (unsigned char*)color_ptr, t.tile_props[i].size, t.tile_props[i].size, 1, PIXELFORMAT_UNCOMPRESSED_R8G8B8A8 };
-        Texture2D texture = LoadTextureFromImage(image);
-        t.tile_props[i].texture = texture;
-        
-        color_ptr += t.tile_props[i].size * t.tile_props[i].size * 4;
+        unsigned char image_type = 0;
+        if (read_byte(&ptr, end_ptr, &image_type) == -1)
+            return -1;
+        uint32_t image_size = 0;
+        if (read_uint32(&ptr, end_ptr, &image_size) == -1)
+            return -1;
+
+        Image img = LoadImageFromMemory(".bmp", ptr, image_size);
+        t.tile_props[i].texture = LoadTextureFromImage(img);
+        ptr += image_size;
+        if (ptr > end_ptr)
+            break;
     }
 
     *tilemap = t;
@@ -74,7 +73,7 @@ int load_tilemap_from_bin(Tilemap* tilemap, int tilemap_id) {
         return -1;
 
     switch (tilemap_id) {
-        case 0: return load_tilemap(tilemap, _binary_assets_tilemaps_summer_start, _binary_assets_tilemaps_summer_end-1);
+        case 0: return load_tilemap(tilemap, _binary_assets_t_summer_start, _binary_assets_t_summer_end-1);
         default: return -1;
     }
 }

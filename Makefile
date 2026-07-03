@@ -28,10 +28,10 @@ bin/l_%$(OBJ_EXT): assets/levels/% | bin
 assets/levels/%: assets/levels/%.txt
 	python3 scripts/compile_level.py $<
 
-bin/t_%$(OBJ_EXT): assets/tilemaps/% | bin
+bin/t_%$(OBJ_EXT): assets/t_% | bin
 	objcopy -I binary -O $(EXEC) -B i386:x86-64 $< $@
-assets/tilemaps/%: assets/tilemaps/%.assets
-	python3 scripts/compile_tilemap.py $<
+assets/t_%: assets/tilemaps/%
+	python3 scripts/compile_tilemap.py $< assets
 
 start:
 	@echo === Building for $(PLATFORM) ===

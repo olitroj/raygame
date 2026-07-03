@@ -1,63 +1,56 @@
 from sys import argv
 import os
 
-if len(argv) < 2:
-    print("ERROR: compile_tilemap.py: No tilemap directory provided!")
+if len(argv) != 3:
+    print("ERROR: compile_tilemap.py <input-dir> <output-dir>")
     exit()
 
-def key_func(x):
-    name = os.path.splitext(x)[0]
-    try:
-        return int(name)
-    except ValueError:
-        return float('inf')  # pushes non-numbers to the end
+dir_path = argv[1]
+out_dir = argv[2]
+tilemap_name = os.path.basename(dir_path)
+buffer = bytearray([0xA0, 0x44])
 
-for dir_path in argv[1:]:
-    meta_buffer = bytearray([0xA0, 0x44])
-    texture_buffer = bytearray()
-    tilemap_name = ""
-    parent_dir = os.path.dirname(dir_path)
+# Removes slash at the end, it causes problems
+if dir_path[-1] == '/':
+    dir_path = dir_path[:-1]
+if out_dir[-1] == '/':
+    out_dir = out_dir[:-1]
+
+# Read meta file
+with open(f"{dir_path}/meta.txt", "r") as meta_file:
+    lines = meta_file.read().splitlines()
+
+    # Read tilemap ID
+    tile_id = lines.pop(0)
+    if not tile_id.isnumeric() or int(tile_id) < 0 or int(tile_id) > 255:
+        print(f"ERROR: compile_tilemap.py: Tilemap ID must be 0-255 ({tile_id})!")
+        exit()
+    buffer.extend(int(tile_id).to_bytes())
     
-    for file in sorted(os.listdir(dir_path), key=key_func):
-        print(file)
+    # Read tile props
+    for l in lines:
+        tile_props = l.split()
+        texture_filename = tile_props.pop(0)
 
-        if file.endswith(".txt"):
-            tilemap_name = file.removesuffix(".txt")
-            with open(f"{dir_path}/{file}", "rb") as meta_file:
-                curr_value = 0
-                tile_count = 0
-                for c in meta_file.read():
-                    if c == ord('\n'):
-                        meta_buffer.append(curr_value)
-                        curr_value = 0
-                        tile_count += 1
-                    elif c == ord(' '):
-                        meta_buffer.append(curr_value)
-                        curr_value = 0
-                    else:
-                        curr_value = curr_value * 10 + (c - ord('0'))
-                meta_buffer.append(curr_value)
-                meta_buffer.insert(3, tile_count)
+        # Append image type to props
+        if texture_filename.endswith(".bmp"):
+            tile_props.append(0)
+        elif texture_filename.endswith(".png"):
+            tile_props.append(1)
 
-        elif file.endswith(".bmp"):
-            with open(f"{dir_path}/{file}", "rb") as texture_file:
-                data = texture_file.read()
+        # Convert to bytes
+        try:
+            buffer.extend([int(x) for x in tile_props])
+        except:
+            print(f"ERROR: compile_tilemap.py: Tile properties must be 0-255!")
+            exit()
 
-                offset = int.from_bytes(data[10:14], "little")
-                width = int.from_bytes(data[18:22], "little")
-                height = int.from_bytes(data[22:26], "little")
+        # Read texture file
+        with open(f"{dir_path}/{texture_filename}", "rb") as texture_file:
+            texture_bytes = texture_file.read()
+            buffer.extend(len(texture_bytes).to_bytes(4, "little"))
+            buffer.extend(texture_bytes)
 
-                raw = data[offset:]
-                row_size = width * 4
-
-                for y in range(height):
-                    src_y = height - 1 - y
-                    row = raw[src_y * row_size:(src_y + 1) * row_size]
-
-                    for i in range(0, len(row), 4):
-                        b, g, r, a = row[i:i+4]
-                        texture_buffer.extend((r, g, b, a))
-
-    with open(f"{parent_dir}/{tilemap_name}", "wb") as tilemap_file:
-        tilemap_file.write(meta_buffer)
-        tilemap_file.write(texture_buffer)
+# Write results to file
+with open(f"{out_dir}/t_{tilemap_name}", "wb") as tilemap_file:
+    tilemap_file.write(buffer)
