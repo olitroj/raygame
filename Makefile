@@ -23,10 +23,10 @@ LIB_PATHS	:= $(addprefix -L,$(wildcard deps/$(PLATFORM)/*/lib))
 all: start $(LEVEL_PATHS) $(TILE_PATHS)
 	gcc src/main.c $(LEVEL_PATHS) $(TILE_PATHS) $(INC_PATHS) $(LIB_PATHS) $(addprefix -l,$(LIBS)) -std=$(STD) -o bin/$(BIN_NAME)
 
-bin/l_%$(OBJ_EXT): assets/levels/% | bin
+bin/l_%$(OBJ_EXT): assets/l_% | bin
 	objcopy -I binary -O $(EXEC) -B i386:x86-64 $< $@
-assets/levels/%: assets/levels/%.txt
-	python3 scripts/compile_level.py $<
+assets/l_%: assets/levels/%.txt
+	python3 scripts/compile_level.py $< assets
 
 bin/t_%$(OBJ_EXT): assets/t_% | bin
 	objcopy -I binary -O $(EXEC) -B i386:x86-64 $< $@

@@ -2,8 +2,8 @@
 
 #include "defs.h"
 
-extern const unsigned char _binary_assets_levels_level0_start[];
-extern const unsigned char _binary_assets_levels_level0_end[];
+extern const unsigned char _binary_assets_l_level0_start[];
+extern const unsigned char _binary_assets_l_level0_end[];
 
 typedef struct level_s {
     const char* name;
@@ -79,7 +79,7 @@ int load_level_from_bin(Level* level, int level_no) {
         return -1;
 
     switch (level_no) {
-        case 0: return load_level(level, _binary_assets_levels_level0_start, _binary_assets_levels_level0_end-1);
+        case 0: return load_level(level, _binary_assets_l_level0_start, _binary_assets_l_level0_end-1);
         default: return -1;
     }
 }
