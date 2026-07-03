@@ -41,7 +41,13 @@ static int load_tilemap(Tilemap* tilemap, const unsigned char* ptr, const unsign
         if (read_uint32(&ptr, end_ptr, &image_size) == -1)
             return -1;
 
-        Image img = LoadImageFromMemory(".bmp", ptr, image_size);
+        const char* type;
+        switch (image_type) {
+            case 1: type = ".png"; break;
+            default: type = ".bmp";
+        }
+
+        Image img = LoadImageFromMemory(type, ptr, image_size);
         t.tile_props[i].texture = LoadTextureFromImage(img);
         ptr += image_size;
         if (ptr > end_ptr)
