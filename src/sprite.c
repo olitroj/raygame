@@ -2,16 +2,22 @@
 
 #define COLLISION_OFFSET    0.0001f     // Small offset from colliding tile so sprite doesn't get stuck in wall
 
+void apply_friction(Sprite* spr, int tile_friction);
+
 // Applies a force (on every frame) over some time, updates resulting velocity
 void apply_force_sprite(Sprite* spr, Vector2 force) {
     spr->velocity.x += force.x / spr->mass * GetFrameTime();
     spr->velocity.y += force.y / spr->mass * GetFrameTime();
+    if (force.x)
+        spr->horizontal_force = 1;
 }
 
 // Applies an instantanious (single frame) force to the sprite, updates resulting velocity
 void apply_impulse_sprite(Sprite* spr, Vector2 force) {
     spr->velocity.x += force.x / spr->mass;
     spr->velocity.y += force.y / spr->mass;
+    if (force.x)
+        spr->horizontal_force = 1;
 }
 
 // Updates sprite position based on current velocity. Corrects position for collision and friction
@@ -45,7 +51,7 @@ void update_sprite(Sprite* spr, Level* level, Tilemap* tilemap) {
     }
 
     // Checks top and bottom edges with future y values for collision tiles
-    spr->grounded = false;
+    spr->grounded = 0;
     left_tile = (int)(spr->position.x - spr_hwidth) / tile_size;
     right_tile = (int)(spr->position.x + spr_hwidth) / tile_size;
     top_tile = (int)(future_y - spr_hheight) / tile_size;
@@ -59,20 +65,19 @@ void update_sprite(Sprite* spr, Level* level, Tilemap* tilemap) {
         else if (tileprops[level->tiles[x + level->width*bottom_tile]].solid) {
             future_y = bottom_tile*tile_size - spr_hheight - COLLISION_OFFSET;
             spr->velocity.y = 0.f;
-            spr->grounded = true;
-
-            // TODO: Better friction (only applied when player stops moving)
-            float fric_coeff = tileprops[level->tiles[x + level->width*bottom_tile]].friction * spr->velocity.x * GetFrameTime();
-            if (spr->velocity.x > 0.f)
-                spr->velocity.x -= (spr->velocity.x > fric_coeff) ? fric_coeff : 0.f;
-            else if (spr->velocity.x < 0.f)
-                spr->velocity.x -= (spr->velocity.x < -fric_coeff) ? fric_coeff : 0.f;
+            spr->grounded = 1;
+            
+            if (!spr->horizontal_force) {
+                int tile_friction = tileprops[level->tiles[x + level->width*bottom_tile]].friction;
+                apply_friction(spr, tile_friction);
+            }
             break;
         }
     }
 
     spr->position.x = future_x;
     spr->position.y = future_y;
+    spr->horizontal_force = 0;
 }
 
 void draw_sprite(Sprite* spr) {
@@ -90,4 +95,13 @@ void focus_camera_sprite(Sprite* spr, Camera2D* cam) {
     cam->offset = (Vector2){ GetScreenWidth() * 0.5f, GetScreenHeight() * 0.7f };
     cam->rotation = 0.f;
     cam->zoom = 1.f;
+}
+
+
+void apply_friction(Sprite* spr, int tile_friction) {
+    float fric_coeff = tile_friction * spr->velocity.x * GetFrameTime();
+    if (spr->velocity.x > 0.f)
+        spr->velocity.x -= (spr->velocity.x > fric_coeff) ? fric_coeff : 0.f;
+    else if (spr->velocity.x < 0.f)
+        spr->velocity.x -= (spr->velocity.x < -fric_coeff) ? fric_coeff : 0.f;
 }

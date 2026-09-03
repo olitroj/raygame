@@ -33,5 +33,10 @@ void control_player(Sprite* plr) {
     if (IsKeyPressed(KEY_DOWN) && plr->mass > 1.f)
         plr->mass -= 1.f;
         
-    apply_force_sprite(plr, move_dir);
+    if (move_dir.x || move_dir.y)
+        apply_force_sprite(plr, move_dir);
+
+    // Flag doesn't get set when max speed reached, need to artificially set it here
+    if (IsKeyDown(KEY_A) || IsKeyDown(KEY_D))
+        plr->horizontal_force = 1;
 }

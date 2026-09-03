@@ -10,7 +10,10 @@ typedef struct sprite_s {
     Vector2 size;
     float mass;
     Vector2 velocity;
-    bool grounded;
+
+    char grounded;
+    char horizontal_force; 
+    
 } Sprite;
 
 void apply_force_sprite(Sprite* spr, Vector2 force);
