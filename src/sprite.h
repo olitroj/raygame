@@ -13,7 +13,6 @@ typedef struct sprite_s {
     bool grounded;
 } Sprite;
 
-float get_max_speed_sprite(float mass);
 void apply_force_sprite(Sprite* spr, Vector2 force);
 void apply_impulse_sprite(Sprite* spr, Vector2 force);
 void update_sprite(Sprite* spr, Level* level, Tilemap* tilemap);

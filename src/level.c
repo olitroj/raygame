@@ -1,8 +1,9 @@
 #include "level.h"
 
 #include "raylib.h"
-#include "defs.h"
 #include "read.h"
+
+#define TILE_AIR    255
 
 extern const unsigned char _binary_assets_l_level0_start[];
 extern const unsigned char _binary_assets_l_level0_end[];

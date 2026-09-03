@@ -1,21 +1,20 @@
 #include "sprite.h"
 
-#include "defs.h"
+#define COLLISION_OFFSET    0.0001f     // Small offset from colliding tile so sprite doesn't get stuck in wall
 
-float get_max_speed_sprite(float mass) {
-    return SPRITE_SPEED * (-mass + SPRITE_MAX_MASS);
-}
-
+// Applies a force (on every frame) over some time, updates resulting velocity
 void apply_force_sprite(Sprite* spr, Vector2 force) {
     spr->velocity.x += force.x / spr->mass * GetFrameTime();
     spr->velocity.y += force.y / spr->mass * GetFrameTime();
 }
 
+// Applies an instantanious (single frame) force to the sprite, updates resulting velocity
 void apply_impulse_sprite(Sprite* spr, Vector2 force) {
     spr->velocity.x += force.x / spr->mass;
     spr->velocity.y += force.y / spr->mass;
 }
 
+// Updates sprite position based on current velocity. Corrects position for collision and friction
 void update_sprite(Sprite* spr, Level* level, Tilemap* tilemap) {
     unsigned int tile_size = level->tile_size;
 
@@ -34,12 +33,12 @@ void update_sprite(Sprite* spr, Level* level, Tilemap* tilemap) {
     int bottom_tile = (int)(spr->position.y + spr_hheight) / tile_size;
     for (int y = top_tile; y <= bottom_tile; y++) {
         if (tileprops[level->tiles[left_tile + level->width*y]].solid) {
-            future_x = (left_tile+1)*tile_size + spr_hwidth + SPRITE_COLLISION_OFFSET;
+            future_x = (left_tile+1)*tile_size + spr_hwidth + COLLISION_OFFSET;
             spr->velocity.x = 0.f;
             break;
         }
         else if (tileprops[level->tiles[right_tile + level->width*y]].solid) {
-            future_x = right_tile*tile_size - spr_hwidth - SPRITE_COLLISION_OFFSET;
+            future_x = right_tile*tile_size - spr_hwidth - COLLISION_OFFSET;
             spr->velocity.x = 0.f;
             break;
         }
@@ -53,12 +52,12 @@ void update_sprite(Sprite* spr, Level* level, Tilemap* tilemap) {
     bottom_tile = (int)(future_y + spr_hheight) / tile_size;
     for (int x = left_tile; x <= right_tile; x++) {
         if (tileprops[level->tiles[x + level->width*top_tile]].solid) {
-            future_y = (top_tile+1)*tile_size + spr_hheight + SPRITE_COLLISION_OFFSET;
+            future_y = (top_tile+1)*tile_size + spr_hheight + COLLISION_OFFSET;
             spr->velocity.y = 0.f;
             break;
         }
         else if (tileprops[level->tiles[x + level->width*bottom_tile]].solid) {
-            future_y = bottom_tile*tile_size - spr_hheight - SPRITE_COLLISION_OFFSET;
+            future_y = bottom_tile*tile_size - spr_hheight - COLLISION_OFFSET;
             spr->velocity.y = 0.f;
             spr->grounded = true;
 

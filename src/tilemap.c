@@ -1,6 +1,5 @@
 #include "tilemap.h"
 
-#include "defs.h"
 #include "read.h"
 
 extern const unsigned char _binary_assets_t_summer_start[];

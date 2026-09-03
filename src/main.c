@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include "raylib.h"
 
-#include "defs.h"
 #include "level.h"
 #include "tilemap.h"
 #include "sprite.h"
