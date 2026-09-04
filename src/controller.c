@@ -12,29 +12,30 @@ float get_max_speed(float mass) {
 }
 
 // TODO: Maybe make SPRIE_ACCEL_TIME dependent on the gravity
-void control_player(Sprite* plr) {
+void control_player(Sprite* plr, Vector2* movement_force, Vector2* impulse) {
     Vector2 move_dir = {0};
     float max_speed = get_max_speed(plr->mass);
 
     if (IsKeyDown(KEY_W) && plr->grounded)
-        apply_impulse_sprite(plr, (Vector2){0.f, -SPRITE_JUMP_STRENGTH});
+        impulse->y -= SPRITE_JUMP_STRENGTH;
     if (IsKeyDown(KEY_A) && plr->velocity.x > -max_speed)
-        move_dir.x -= plr->mass * max_speed / ACCELERATION_TIME;
+        movement_force->x -= plr->mass * max_speed / ACCELERATION_TIME;
     if (IsKeyDown(KEY_D) && plr->velocity.x < max_speed)
-        move_dir.x += plr->mass * max_speed / ACCELERATION_TIME;
+        movement_force->x += plr->mass * max_speed / ACCELERATION_TIME;
 
-    if (IsKeyPressed(KEY_Q))
-        apply_impulse_sprite(plr, (Vector2){-700.f, -500.f});
-    if (IsKeyPressed(KEY_E))
-        apply_impulse_sprite(plr, (Vector2){700.f, -500.f});
+    if (IsKeyPressed(KEY_Q)) {
+        impulse->x -= 700.f;
+        impulse->y -= 500.f;
+    }
+    if (IsKeyPressed(KEY_E)) {
+        impulse->x += 700.f;
+        impulse->y -= 500.f;
+    }
 
     if (IsKeyPressed(KEY_UP))
         plr->mass += 1.f;
     if (IsKeyPressed(KEY_DOWN) && plr->mass > 1.f)
         plr->mass -= 1.f;
-        
-    if (move_dir.x || move_dir.y)
-        apply_force_sprite(plr, move_dir);
 
     // Flag doesn't get set when max speed reached, need to artificially set it here
     if (IsKeyDown(KEY_A) || IsKeyDown(KEY_D))

@@ -1,13 +1,15 @@
 #include "sprite.h"
 
+#include "globals.h"
+
 #define COLLISION_OFFSET    0.0001f     // Small offset from colliding tile so sprite doesn't get stuck in wall
 
-void apply_friction(Sprite* spr, int tile_friction);
+static void apply_friction(Sprite* spr, int tile_friction);
 
 // Applies a force (on every frame) over some time, updates resulting velocity
 void apply_force_sprite(Sprite* spr, Vector2 force) {
-    spr->velocity.x += force.x / spr->mass * GetFrameTime();
-    spr->velocity.y += force.y / spr->mass * GetFrameTime();
+    spr->velocity.x += force.x / spr->mass * PHYSICS_FIXED_STEP_TIME;
+    spr->velocity.y += force.y / spr->mass * PHYSICS_FIXED_STEP_TIME;
     if (force.x)
         spr->horizontal_force = 1;
 }
@@ -24,8 +26,8 @@ void apply_impulse_sprite(Sprite* spr, Vector2 force) {
 void update_sprite(Sprite* spr, Level* level, Tilemap* tilemap) {
     unsigned int tile_size = level->tile_size;
 
-    float future_x = spr->position.x + spr->velocity.x * tile_size * GetFrameTime();
-    float future_y = spr->position.y + spr->velocity.y * tile_size * GetFrameTime();
+    float future_x = spr->position.x + spr->velocity.x * tile_size * PHYSICS_FIXED_STEP_TIME;
+    float future_y = spr->position.y + spr->velocity.y * tile_size * PHYSICS_FIXED_STEP_TIME;
 
     float spr_hwidth = spr->size.x / 2.f;
     float spr_hheight = spr->size.y / 2.f;
@@ -98,8 +100,8 @@ void focus_camera_sprite(Sprite* spr, Camera2D* cam) {
 }
 
 
-void apply_friction(Sprite* spr, int tile_friction) {
-    float fric_coeff = tile_friction * spr->velocity.x * GetFrameTime();
+static void apply_friction(Sprite* spr, int tile_friction) {
+    float fric_coeff = tile_friction * spr->velocity.x * PHYSICS_FIXED_STEP_TIME;
     if (spr->velocity.x > 0.f)
         spr->velocity.x -= (spr->velocity.x > fric_coeff) ? fric_coeff : 0.f;
     else if (spr->velocity.x < 0.f)
