@@ -6,30 +6,25 @@
 
 #include "raylib.h"
 
-// Maximum speed is a simple linear decreasing function with a zero at max mass
-float get_max_speed(float mass) {
-    return -mass + MAX_MASS;
-}
+void control_player(Sprite* plr, float gravity) {
+    float max_speed = -plr->mass + MAX_MASS;
 
-// TODO: Maybe make SPRIE_ACCEL_TIME dependent on the gravity
-void control_player(Sprite* plr, Vector2* movement_force, Vector2* impulse) {
-    Vector2 move_dir = {0};
-    float max_speed = get_max_speed(plr->mass);
+    plr->force.y += plr->mass * gravity;
 
-    if (IsKeyDown(KEY_W) && plr->grounded)
-        impulse->y -= SPRITE_JUMP_STRENGTH;
+    if (IsKeyPressed(KEY_W) && plr->grounded)
+        plr->impulse.y -= SPRITE_JUMP_STRENGTH;
     if (IsKeyDown(KEY_A) && plr->velocity.x > -max_speed)
-        movement_force->x -= plr->mass * max_speed / ACCELERATION_TIME;
+        plr->force.x -= plr->mass * max_speed / ACCELERATION_TIME;
     if (IsKeyDown(KEY_D) && plr->velocity.x < max_speed)
-        movement_force->x += plr->mass * max_speed / ACCELERATION_TIME;
+        plr->force.x += plr->mass * max_speed / ACCELERATION_TIME;
 
     if (IsKeyPressed(KEY_Q)) {
-        impulse->x -= 700.f;
-        impulse->y -= 500.f;
+        plr->impulse.x -= 700.f;
+        plr->impulse.y -= 500.f;
     }
     if (IsKeyPressed(KEY_E)) {
-        impulse->x += 700.f;
-        impulse->y -= 500.f;
+        plr->impulse.x += 700.f;
+        plr->impulse.y -= 500.f;
     }
 
     if (IsKeyPressed(KEY_UP))
@@ -37,7 +32,7 @@ void control_player(Sprite* plr, Vector2* movement_force, Vector2* impulse) {
     if (IsKeyPressed(KEY_DOWN) && plr->mass > 1.f)
         plr->mass -= 1.f;
 
-    // Flag doesn't get set when max speed reached, need to artificially set it here
+    // Flag doesn't get set when max speed reached (because force stops being applied), need to artificially set it here
     if (IsKeyDown(KEY_A) || IsKeyDown(KEY_D))
         plr->horizontal_force = 1;
 }

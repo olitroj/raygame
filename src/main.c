@@ -10,6 +10,7 @@
 // Debug
 #include <stdio.h>
 #include <time.h>
+#define NANOS_IN_PHYSICS_STEP PHYSICS_FIXED_STEP_TIME * 100000000
 
 int main(void)
 {
@@ -23,9 +24,9 @@ int main(void)
     load_tilemap_from_bin(&t, l.tilemap_id);
 
     Sprite plr = {
-        (Vector2){l.start_x * l.tile_size, l.start_y * l.tile_size},
+        13.f,
         (Vector2){50.f, 50.f},
-        13.f
+        (Vector2){l.start_x * l.tile_size, l.start_y * l.tile_size},
     };
     Camera2D cam = {0};
 
@@ -41,29 +42,25 @@ int main(void)
         if (IsKeyPressed(KEY_F11))
             ToggleBorderlessWindowed();
 
-        // Player input
-        Vector2 plr_force = {0}, plr_impulse = {0};
-        control_player(&plr, &plr_force, &plr_impulse);
+        // Player input (get sprite force and impulse)
+        control_player(&plr, l.gravity);
 
         // Fixed-step physics (60Hz)
-        // Performs however many steps fit in the time it took to render last frame, applies impulse only on the first step
+        // Performs however many steps fit in the time it took to render last frame
+        // Consumes impulse on the first step, consumes force after all steps
         accumulator += GetFrameTime();
-        char first_step = 1;
         while (accumulator > PHYSICS_FIXED_STEP_TIME) {
             timespec_get(&physics_start, TIME_UTC);
 
-            if (first_step) {
-                apply_impulse_sprite(&plr, plr_impulse);
-                first_step = 0;
-            }
-
-            apply_force_sprite(&plr, (Vector2){0.f, plr.mass * l.gravity});
-            apply_force_sprite(&plr, plr_force);
             update_sprite(&plr, &l, &t);
+            plr.impulse = (Vector2){0};
             accumulator -= PHYSICS_FIXED_STEP_TIME;
 
             timespec_get(&physics_end, TIME_UTC);
-       }
+        }
+        plr.force = (Vector2){0};
+
+        long physics_step_time = physics_end.tv_nsec - physics_start.tv_nsec;
 
         // Rendering
         focus_camera_sprite(&plr, &cam);
@@ -82,8 +79,14 @@ int main(void)
             DrawText(buf, 10, 70, 20, RED);
             sprintf(buf, "Velocity: %2.1f %2.1f", plr.velocity.x, plr.velocity.y);
             DrawText(buf, 10, 100, 20, RED);
-            sprintf(buf, "Physics time: %ld ns", physics_end.tv_nsec - physics_start.tv_nsec);
-            DrawText(buf, 10, 130, 20, RED);
+            sprintf(buf, "Physics time: %ld ns", physics_step_time);
+            Color physics_time_color = GREEN;
+            if (physics_step_time > NANOS_IN_PHYSICS_STEP * .8f) {
+                physics_time_color = YELLOW;
+            } else if (physics_step_time > NANOS_IN_PHYSICS_STEP) {
+                physics_time_color = RED;
+            }
+            DrawText(buf, 10, 130, 20, physics_time_color);
         EndDrawing();
     }
 

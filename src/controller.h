@@ -5,6 +5,6 @@
 
 #include "raylib.h"
 
-void control_player(Sprite* plr, Vector2* movement_force, Vector2* impulse);
+void control_player(Sprite* plr, float gravity);
 
 #endif

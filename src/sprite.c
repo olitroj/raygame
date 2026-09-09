@@ -5,25 +5,13 @@
 #define COLLISION_OFFSET    0.0001f     // Small offset from colliding tile so sprite doesn't get stuck in wall
 
 static void apply_friction(Sprite* spr, int tile_friction);
+static void apply_force_sprite(Sprite* spr);
+static void apply_impulse_sprite(Sprite* spr);
 
-// Applies a force (on every frame) over some time, updates resulting velocity
-void apply_force_sprite(Sprite* spr, Vector2 force) {
-    spr->velocity.x += force.x / spr->mass * PHYSICS_FIXED_STEP_TIME;
-    spr->velocity.y += force.y / spr->mass * PHYSICS_FIXED_STEP_TIME;
-    if (force.x)
-        spr->horizontal_force = 1;
-}
-
-// Applies an instantanious (single frame) force to the sprite, updates resulting velocity
-void apply_impulse_sprite(Sprite* spr, Vector2 force) {
-    spr->velocity.x += force.x / spr->mass;
-    spr->velocity.y += force.y / spr->mass;
-    if (force.x)
-        spr->horizontal_force = 1;
-}
-
-// Updates sprite position based on current velocity. Corrects position for collision and friction
 void update_sprite(Sprite* spr, Level* level, Tilemap* tilemap) {
+    apply_impulse_sprite(spr);
+    apply_force_sprite(spr);
+
     unsigned int tile_size = level->tile_size;
 
     float future_x = spr->position.x + spr->velocity.x * tile_size * PHYSICS_FIXED_STEP_TIME;
@@ -106,4 +94,18 @@ static void apply_friction(Sprite* spr, int tile_friction) {
         spr->velocity.x -= (spr->velocity.x > fric_coeff) ? fric_coeff : 0.f;
     else if (spr->velocity.x < 0.f)
         spr->velocity.x -= (spr->velocity.x < -fric_coeff) ? fric_coeff : 0.f;
+}
+
+static void apply_force_sprite(Sprite* spr) {
+    spr->velocity.x += spr->force.x / spr->mass * PHYSICS_FIXED_STEP_TIME;
+    spr->velocity.y += spr->force.y / spr->mass * PHYSICS_FIXED_STEP_TIME;
+    if (spr->force.x)
+        spr->horizontal_force = 1;
+}
+
+static void apply_impulse_sprite(Sprite* spr) {
+    spr->velocity.x += spr->impulse.x / spr->mass;
+    spr->velocity.y += spr->impulse.y / spr->mass;
+    if (spr->impulse.x)
+        spr->horizontal_force = 1;
 }
