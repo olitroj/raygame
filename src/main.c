@@ -30,11 +30,7 @@ int main(void)
     };
     Camera2D cam = {0};
 
-    // TODO: Fix sprites phasing through walls on low FPS
-    // SetTargetFPS(20);
-
     float accumulator = 0.f;
-
     struct timespec physics_start = {0}, physics_end = {0};
 
     while (!WindowShouldClose())
