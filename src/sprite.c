@@ -39,7 +39,7 @@ void update_sprite(Sprite* spr, Level* level, Tilemap* tilemap) {
             collision_y = collision_step_y_sprite(spr, level, tilemap, spr->position.y + future_step_y);
     }
 
-    spr->horizontal_force = 0;
+    spr->horizontal_force = 0; // reset flag
 }
 
 void draw_sprite(Sprite* spr) {
@@ -103,21 +103,27 @@ static int collision_step_x_sprite(Sprite* spr, Level* level, Tilemap* tilemap, 
 
     float spr_hwidth = spr->size.x / 2.f;
     float spr_hheight = spr->size.y / 2.f;
-            
-    // Checks left and right edges with future x values for collision tiles
-    int left_tile = (int)(future_x - spr_hwidth) / tile_size;
-    int right_tile = (int)(future_x + spr_hwidth) / tile_size;
-    int top_tile = (int)(spr->position.y - spr_hheight) / tile_size;
-    int bottom_tile = (int)(spr->position.y + spr_hheight) / tile_size;
-    for (int y = top_tile; y <= bottom_tile; y++) {
+
+    int left_tile = (int)(future_x - spr_hwidth) / (int)tile_size;
+    int right_tile = (int)(future_x + spr_hwidth) / (int)tile_size;
+    int top_row = (int)(spr->position.y - spr_hheight) / (int)tile_size;
+    int bottom_row = (int)(spr->position.y + spr_hheight) / (int)tile_size;
+
+    // Don't index level tiles out of bounds
+    if (left_tile < 0 || right_tile >= level->width || top_row < 0 || bottom_row >= level->height) {
+        spr->position.x = future_x;
+        return collision_detected;
+    }
+
+    for (int y = top_row; y <= bottom_row; y++) {
         if (tileprops[level->tiles[left_tile + level->width*y]].solid) {
-            future_x = (left_tile+1)*tile_size + spr_hwidth + COLLISION_OFFSET;
+            future_x = (left_tile + 1) * tile_size + spr_hwidth + COLLISION_OFFSET;
             spr->velocity.x = 0.f;
             collision_detected = 1;
             break;
         }
         else if (tileprops[level->tiles[right_tile + level->width*y]].solid) {
-            future_x = right_tile*tile_size - spr_hwidth - COLLISION_OFFSET;
+            future_x = right_tile * tile_size - spr_hwidth - COLLISION_OFFSET;
             spr->velocity.x = 0.f;
             collision_detected = 1;
             break;
@@ -134,27 +140,33 @@ static int collision_step_y_sprite(Sprite* spr, Level* level, Tilemap* tilemap, 
 
     float spr_hwidth = spr->size.x / 2.f;
     float spr_hheight = spr->size.y / 2.f;
-            
-    // Checks top and bottom edges with future y values for collision tiles
-    int left_tile = (int)(spr->position.x - spr_hwidth) / tile_size;
-    int right_tile = (int)(spr->position.x + spr_hwidth) / tile_size;
-    int top_tile = (int)(future_y - spr_hheight) / tile_size;
-    int bottom_tile = (int)(future_y + spr_hheight) / tile_size;
+
+    int left_tile = (int)(spr->position.x - spr_hwidth) / (int)tile_size;
+    int right_tile = (int)(spr->position.x + spr_hwidth) / (int)tile_size;
+    int top_row = (int)(future_y - spr_hheight) / (int)tile_size;
+    int bottom_row = (int)(future_y + spr_hheight) / (int)tile_size;
+
+    // Don't index level tiles out of bounds
+    if (left_tile < 0 || right_tile >= level->width || top_row < 0 || bottom_row >= level->height) {
+        spr->position.y = future_y;
+        return collision_detected;
+    }
+
     spr->grounded = 0;
     for (int x = left_tile; x <= right_tile; x++) {
-        if (tileprops[level->tiles[x + level->width*top_tile]].solid) {
-            future_y = (top_tile+1)*tile_size + spr_hheight + COLLISION_OFFSET;
+        if (tileprops[level->tiles[x + level->width*top_row]].solid) {
+            future_y = (top_row + 1) * tile_size + spr_hheight + COLLISION_OFFSET;
             spr->velocity.y = 0.f;
             collision_detected = 1;
             break;
         }
-        else if (tileprops[level->tiles[x + level->width*bottom_tile]].solid) {
-            future_y = bottom_tile*tile_size - spr_hheight - COLLISION_OFFSET;
+        else if (tileprops[level->tiles[x + level->width*bottom_row]].solid) {
+            future_y = bottom_row * tile_size - spr_hheight - COLLISION_OFFSET;
             spr->velocity.y = 0.f;
             collision_detected = 1;
             spr->grounded = 1;
             if (!spr->horizontal_force) {
-                float tile_friction = tileprops[level->tiles[x + level->width*bottom_tile]].friction;
+                float tile_friction = tileprops[level->tiles[x + level->width*bottom_row]].friction;
                 apply_friction_sprite(spr, tile_friction);
             }
             break;
