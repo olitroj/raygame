@@ -13,6 +13,7 @@ typedef struct sprite_s {
 
     Vector2 force;
     Vector2 impulse;
+    Vector2 movement;
 
     char grounded;
     char horizontal_force; 

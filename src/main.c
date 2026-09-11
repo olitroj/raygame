@@ -30,7 +30,8 @@ int main(void)
             ToggleBorderlessWindowed();
 
         // Player input (get sprite force and impulse)
-        control_player(&plr, l.gravity);
+        control_player(&plr);
+        plr.force.y += plr.mass * l.gravity;
 
         // Fixed-step physics (60Hz)
         // Performs however many steps fit in the time it took to render last frame

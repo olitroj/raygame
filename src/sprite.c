@@ -4,10 +4,13 @@
 
 #define COLLISION_OFFSET    0.0001f     // Small offset from colliding tile so sprite doesn't get stuck in wall
 #define STEP_COUNT          2
+#define ACCELERATION_TIME   .15f     // Time it takes to accelerate to max speed
+#define MAX_MASS            50.f    // Mass where movement stops
 
 static void apply_friction_sprite(Sprite* spr, float tile_friction);
 static void apply_force_sprite(Sprite* spr);
 static void apply_impulse_sprite(Sprite* spr);
+static void apply_movement_sprite(Sprite* spr);
 static int collision_step_x_sprite(Sprite* spr, Level* level, Tilemap* tilemap, float future_x);
 static int collision_step_y_sprite(Sprite* spr, Level* level, Tilemap* tilemap, float future_y);
 
@@ -16,8 +19,9 @@ static inline void create_sprite(Sprite* spr, float mass, float pos_x, float pos
 }
 
 void update_sprite(Sprite* spr, Level* level, Tilemap* tilemap) {
-    apply_impulse_sprite(spr);
+    apply_movement_sprite(spr);
     apply_force_sprite(spr);
+    apply_impulse_sprite(spr);
 
     unsigned int tile_size = level->tile_size;
     float future_x = spr->position.x + spr->velocity.x * tile_size * PHYSICS_FIXED_STEP_TIME;
@@ -76,6 +80,20 @@ static void apply_impulse_sprite(Sprite* spr) {
     spr->velocity.y += spr->impulse.y / spr->mass;
     if (spr->impulse.x)
         spr->horizontal_force = 1;
+}
+
+static void apply_movement_sprite(Sprite* spr) {
+    if (spr->movement.x) {
+        float max_horizontal_speed = -spr->mass + MAX_MASS;
+        float velocity_offset_x = spr->movement.x * max_horizontal_speed * PHYSICS_FIXED_STEP_TIME / ACCELERATION_TIME;
+        if (spr->velocity.x > 0.f && spr->velocity.x + velocity_offset_x >= max_horizontal_speed)
+            spr->velocity.x = max_horizontal_speed;
+        else if (spr->velocity.x < 0.f && spr->velocity.x + velocity_offset_x <= -max_horizontal_speed)
+            spr->velocity.x = -max_horizontal_speed;
+        else
+            spr->velocity.x += velocity_offset_x;
+        spr->horizontal_force = 1;
+    }
 }
 
 static int collision_step_x_sprite(Sprite* spr, Level* level, Tilemap* tilemap, float future_x) {
