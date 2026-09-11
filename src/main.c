@@ -18,11 +18,8 @@ int main(void)
     Tilemap t = {0};
     load_tilemap_from_bin(&t, l.tilemap_id);
 
-    Sprite plr = {
-        13.f,
-        (Vector2){50.f, 50.f},
-        (Vector2){l.start_x * l.tile_size, l.start_y * l.tile_size},
-    };
+    Sprite plr;
+    create_sprite(&plr, 13.f, 50.f, 50.f, l.start_x * l.tile_size, l.start_y * l.tile_size);
     Camera2D cam = {0};
 
     float accumulator = 0.f;

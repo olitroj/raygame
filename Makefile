@@ -4,6 +4,7 @@ TILEMAPS	:= summer
 PLATFORM	:= windows
 BUILD		:= debug
 STD			:= c11
+CFLAGS		:= 
 
 LIBS := raylib
 ifeq ($(PLATFORM),windows)
@@ -14,12 +15,13 @@ else ifeq ($(PLATFORM),linux)
 	LIBS += m X11
 	EXEC := elf64-x86-64
 	OBJ_EXT := .o
+	CFLAGS += -D_POSIX_C_SOURCE=200809L
 endif
 
 ifeq ($(BUILD),debug)
-	CFLAGS := -g -O0 -DDEBUG
+	CFLAGS += -g -O0 -DDEBUG
 else ifeq ($(BUILD),release)
-	CFLAGS := -O2
+	CFLAGS += -O2
 endif
 
 LEVEL_PATHS	:= $(addsuffix $(OBJ_EXT),$(addprefix bin/l_,$(LEVELS)))
@@ -47,4 +49,4 @@ bin:
 clean:
 	rm -rf bin
 
-.PHONY: start all clean
+.PHONY: start all clean bin
