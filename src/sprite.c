@@ -29,8 +29,8 @@ static inline void apply_impulse_sprite(Sprite* spr, Vector2 impulse) {
 }
 
 static inline void apply_movement_sprite(Sprite* spr, Vector2 move_vec) {
-    spr->movement.x += move_vec.x;
-    spr->movement.y += move_vec.y;
+    spr->movement.x = move_vec.x;
+    spr->movement.y = move_vec.y;
 }
 
 void update_sprite(Sprite* spr, Level* level, Tilemap* tilemap) {
