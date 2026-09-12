@@ -7,10 +7,10 @@
 #define ACCELERATION_TIME   .15f     // Time it takes to accelerate to max speed
 #define MAX_MASS            50.f    // Mass where movement stops
 
-static void apply_friction_sprite(Sprite* spr, float tile_friction);
-static void apply_force_sprite(Sprite* spr);
-static void apply_impulse_sprite(Sprite* spr);
-static void apply_movement_sprite(Sprite* spr);
+static void resolve_friction_sprite(Sprite* spr, float tile_friction);
+static void resolve_force_sprite(Sprite* spr);
+static void resolve_impulse_sprite(Sprite* spr);
+static void resolve_movement_sprite(Sprite* spr);
 static int collision_step_x_sprite(Sprite* spr, Level* level, Tilemap* tilemap, float future_x);
 static int collision_step_y_sprite(Sprite* spr, Level* level, Tilemap* tilemap, float future_y);
 
@@ -18,10 +18,25 @@ static inline void create_sprite(Sprite* spr, float mass, float pos_x, float pos
     *spr = (Sprite){ mass, (Vector2){ pos_x, pos_y }, (Vector2){ width, height } };
 }
 
+static inline void apply_force_sprite(Sprite* spr, Vector2 force) {
+    spr->force.x += force.x;
+    spr->force.y += force.y;
+}
+
+static inline void apply_impulse_sprite(Sprite* spr, Vector2 impulse) {
+    spr->impulse.x += impulse.x;
+    spr->impulse.y += impulse.y;
+}
+
+static inline void apply_movement_sprite(Sprite* spr, Vector2 move_vec) {
+    spr->movement.x += move_vec.x;
+    spr->movement.y += move_vec.y;
+}
+
 void update_sprite(Sprite* spr, Level* level, Tilemap* tilemap) {
-    apply_movement_sprite(spr);
-    apply_force_sprite(spr);
-    apply_impulse_sprite(spr);
+    resolve_movement_sprite(spr);
+    resolve_force_sprite(spr);
+    resolve_impulse_sprite(spr);
 
     unsigned int tile_size = level->tile_size;
     float future_x = spr->position.x + spr->velocity.x * tile_size * PHYSICS_FIXED_STEP_TIME;
@@ -60,7 +75,7 @@ void focus_camera_sprite(Sprite* spr, Camera2D* cam) {
 }
 
 
-static void apply_friction_sprite(Sprite* spr, float tile_friction) {
+static void resolve_friction_sprite(Sprite* spr, float tile_friction) {
     float fric_coeff = tile_friction * spr->velocity.x * PHYSICS_FIXED_STEP_TIME;
     if (spr->velocity.x > 0.f)
         spr->velocity.x -= (spr->velocity.x > fric_coeff) ? fric_coeff : 0.f;
@@ -68,21 +83,21 @@ static void apply_friction_sprite(Sprite* spr, float tile_friction) {
         spr->velocity.x -= (spr->velocity.x < -fric_coeff) ? fric_coeff : 0.f;
 }
 
-static void apply_force_sprite(Sprite* spr) {
+static void resolve_force_sprite(Sprite* spr) {
     spr->velocity.x += spr->force.x / spr->mass * PHYSICS_FIXED_STEP_TIME;
     spr->velocity.y += spr->force.y / spr->mass * PHYSICS_FIXED_STEP_TIME;
     if (spr->force.x)
         spr->horizontal_force = 1;
 }
 
-static void apply_impulse_sprite(Sprite* spr) {
+static void resolve_impulse_sprite(Sprite* spr) {
     spr->velocity.x += spr->impulse.x / spr->mass;
     spr->velocity.y += spr->impulse.y / spr->mass;
     if (spr->impulse.x)
         spr->horizontal_force = 1;
 }
 
-static void apply_movement_sprite(Sprite* spr) {
+static void resolve_movement_sprite(Sprite* spr) {
     if (spr->movement.x) {
         float max_horizontal_speed = -spr->mass + MAX_MASS;
         float velocity_offset_x = spr->movement.x * max_horizontal_speed * PHYSICS_FIXED_STEP_TIME / ACCELERATION_TIME;
@@ -167,7 +182,7 @@ static int collision_step_y_sprite(Sprite* spr, Level* level, Tilemap* tilemap, 
             spr->grounded = 1;
             if (!spr->horizontal_force) {
                 float tile_friction = tileprops[level->tiles[x + level->width*bottom_row]].friction;
-                apply_friction_sprite(spr, tile_friction);
+                resolve_friction_sprite(spr, tile_friction);
             }
             break;
         }

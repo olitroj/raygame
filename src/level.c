@@ -34,7 +34,7 @@ int load_level(Level* level, const unsigned char* ptr, const unsigned char* end_
     if (read_word(&ptr, end_ptr, &(l.start_y)) == -1)
         return -1;
         
-    uint16_t gravity = 0;
+    unsigned short gravity = 0;
     if (read_word(&ptr, end_ptr, &(gravity)) == -1)
         return -1;
     l.gravity = (float)gravity;
