@@ -15,7 +15,7 @@ static int collision_step_x_sprite(Sprite* spr, Level* level, Tilemap* tilemap, 
 static int collision_step_y_sprite(Sprite* spr, Level* level, Tilemap* tilemap, float future_y);
 
 static inline void create_sprite(Sprite* spr, float mass, float pos_x, float pos_y, float width, float height) {
-    *spr = (Sprite){ mass, (Vector2){ pos_x, pos_y }, (Vector2){ width, height } };
+    *spr = (Sprite){ mass, (Vector2){ width, height }, (Vector2){ pos_x, pos_y } };
 }
 
 static inline void apply_force_sprite(Sprite* spr, Vector2 force) {

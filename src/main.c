@@ -17,7 +17,7 @@ int main(void)
     Tilemap t = {0};
     load_tilemap_from_bin(&t, l.tilemap_id);
     Sprite plr = {0};
-    create_sprite(&plr, 13.f, 50.f, 50.f, l.start_x * l.tile_size, l.start_y * l.tile_size);
+    create_sprite(&plr, 13.f, l.start_x * l.tile_size, l.start_y * l.tile_size, 50.f, 50.f);
     MyCam cam = {0};
     set_persistent_target_camera(&cam, &(plr.position), 20.f);
 
@@ -26,7 +26,7 @@ int main(void)
     char freecam = 0;
     char falling = 0;
 
-    //SetTargetFPS(20);
+    SetTargetFPS(60);
 
     while (!WindowShouldClose())
     {
