@@ -10,7 +10,6 @@ typedef struct tile_props_s {
 } TileProps;
 
 typedef struct tilemap_s {
-    unsigned char id;
     TileProps tile_props[256];
 } Tilemap;
 

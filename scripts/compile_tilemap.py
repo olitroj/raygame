@@ -19,10 +19,6 @@ if out_dir[-1] == '/':
 # Read meta file
 with open(f"{dir_path}/meta.txt", "r") as meta_file:
     lines = meta_file.read().splitlines()
-
-    # Read tilemap ID
-    tile_id = lines.pop(0)
-    buffer.extend(int(tile_id).to_bytes())
     
     # Read tile props
     for l in lines:
