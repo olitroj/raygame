@@ -17,7 +17,7 @@ Currently just a project for my hobby video game using raylib
 ### Building and running
 
 ```bash
-# Platform and build may be omitted, defaults to `windows` and `debug`
+# PLATFORM and BUILD may be omitted, defaults to `windows` and `debug` respectivly
 make PLATFORM=<windows|linux> BUILD=<debug|release>
 ./bin/raygame
 ```

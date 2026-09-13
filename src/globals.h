@@ -4,6 +4,7 @@
 #define PHYSICS_FIXED_STEP_TIME     1/60.f
 
 #ifdef DEBUG
+#define _POSIX_C_SOURCE 200809L
 #include <stdio.h>
 #include <time.h>
 

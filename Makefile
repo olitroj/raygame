@@ -2,13 +2,12 @@ BIN_NAME	:= raygame
 PLATFORM	:= windows
 BUILD		:= debug
 STD			:= c11
-CFLAGS		:= 
 
 LEVELS		:= level0
 TILEMAPS	:= summer
 BACKDROPS	:= sunny
 
-LIBS := raylib
+LIBS	:= raylib
 ifeq ($(PLATFORM),windows)
     LIBS += gdi32 opengl32 winmm
 	EXEC := pe-x86-64
@@ -17,9 +16,9 @@ else ifeq ($(PLATFORM),linux)
 	LIBS += m X11
 	EXEC := elf64-x86-64
 	OBJ_EXT := .o
-	CFLAGS += -D_POSIX_C_SOURCE=200809L
 endif
 
+CFLAGS	:= 
 ifeq ($(BUILD),debug)
 	CFLAGS += -g -O0 -DDEBUG
 else ifeq ($(BUILD),release)
