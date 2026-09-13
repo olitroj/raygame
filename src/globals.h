@@ -1,9 +1,7 @@
 #ifndef GLOBALS
 #define GLOBALS
 
-#define PHYSICS_FIXED_STEP_TIME 1/60.f
-#define CAMERA_X    0.5f
-#define CAMERA_Y    0.6f
+#define PHYSICS_FIXED_STEP_TIME     1/60.f
 
 #ifdef DEBUG
 #include <stdio.h>

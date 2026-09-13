@@ -5,6 +5,6 @@
 #include "camera.h"
 
 void control_player(Sprite* plr);
-void control_freecam(MyCam* cam);
+void control_freecam(Cam* cam);
 
 #endif

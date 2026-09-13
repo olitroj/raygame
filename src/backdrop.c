@@ -47,6 +47,5 @@ void draw_backdrop(Texture2D* backdrop, Vector2 level_center, Vector2 cam_pos) {
         (level_center.x - backdrop->width * BACKDROP_SCALE / 2.f) + (cam_pos.x - level_center.x) * BACKDROP_MOVEMENT,
         (level_center.y - backdrop->height * BACKDROP_SCALE / 2.f) + (cam_pos.y - level_center.y) * BACKDROP_MOVEMENT
     };
-    LOG("%f, %f\n", position.x, position.y);
     DrawTextureEx(*backdrop, position, 0.f, BACKDROP_SCALE, WHITE);
 }

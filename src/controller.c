@@ -35,17 +35,18 @@ void control_player(Sprite* plr) {
 
 #define FREECAM_SPEED   2000.f
 
-void control_freecam(MyCam* cam) {
-    Vector2 movement = cam->cam_obj.target;
+void control_freecam(Cam* cam) {
+    float target_x, target_y;
+    get_current_position_camera(cam, &target_x, &target_y);
 
     if (IsKeyDown(KEY_W))
-        movement.y -= FREECAM_SPEED * GetFrameTime();
+        target_y -= FREECAM_SPEED * GetFrameTime();
     if (IsKeyDown(KEY_A))
-        movement.x -= FREECAM_SPEED * GetFrameTime();
+        target_x -= FREECAM_SPEED * GetFrameTime();
     if (IsKeyDown(KEY_S))
-        movement.y += FREECAM_SPEED * GetFrameTime();
+        target_y += FREECAM_SPEED * GetFrameTime();
     if (IsKeyDown(KEY_D))
-        movement.x += FREECAM_SPEED * GetFrameTime();
+        target_x += FREECAM_SPEED * GetFrameTime();
 
-    set_target_camera(cam, movement);
+    set_target_camera(cam, target_x, target_y);
 }
