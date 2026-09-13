@@ -5,6 +5,7 @@
 #include "sprite.h"
 #include "controller.h"
 #include "camera.h"
+#include "backdrop.h"
 
 #include "globals.h"
 
@@ -16,10 +17,12 @@ int main(void)
     load_level_from_bin(&l, 0);
     Tilemap t = {0};
     load_tilemap_from_bin(&t, l.tilemap_id);
+    Texture2D backdrop;
+    load_backdrop_from_bin(&backdrop, 0);
     Sprite plr = {0};
     create_sprite(&plr, 13.f, l.start_x * l.tile_size, l.start_y * l.tile_size, 50.f, 50.f);
     MyCam cam = {0};
-    set_persistent_target_camera(&cam, &(plr.position), 20.f);
+    set_persistent_target_camera(&cam, &(plr.position), 25.f);
 
     float accumulator = 0.f;
 
@@ -35,7 +38,7 @@ int main(void)
         if (IsKeyPressed(KEY_V)) {
             freecam = !freecam;
             if (!freecam && !falling)
-                set_persistent_target_camera(&cam, &(plr.position), 20.f);
+                set_persistent_target_camera(&cam, &(plr.position), 25.f);
         }
 
         if (plr.position.y < (l.height + 15) * l.tile_size) {
@@ -71,6 +74,7 @@ int main(void)
             ClearBackground(RAYWHITE);
 
             BeginMode2D(cam.cam_obj);
+                draw_backdrop(&backdrop, (Vector2){ l.width * l.tile_size / 2.f, l.height * l.tile_size / 2.f }, cam.cam_obj.target);
                 draw_sprite(&plr);
                 draw_level(&l, &t);
             EndMode2D();
@@ -93,3 +97,4 @@ int main(void)
 #include "controller.c"
 #include "read.c"
 #include "camera.c"
+#include "backdrop.c"

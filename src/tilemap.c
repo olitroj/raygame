@@ -6,6 +6,9 @@ extern const unsigned char _binary_assets_t_summer_start[];
 extern const unsigned char _binary_assets_t_summer_end[];
 
 int load_tilemap(Tilemap* tilemap, const unsigned char* ptr, const unsigned char* end_ptr) {
+    if (tilemap == NULL)
+        return -1;
+
     Tilemap t = {0};
 
     unsigned char byte = 0;

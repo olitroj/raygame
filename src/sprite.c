@@ -2,11 +2,6 @@
 
 #include "globals.h"
 
-#define COLLISION_OFFSET    0.0001f     // Small offset from colliding tile so sprite doesn't get stuck in wall
-#define STEP_COUNT          2
-#define ACCELERATION_TIME   .15f     // Time it takes to accelerate to max speed
-#define MAX_MASS            50.f    // Mass where movement stops
-
 static void resolve_friction_sprite(Sprite* spr, float tile_friction);
 static void resolve_force_sprite(Sprite* spr);
 static void resolve_impulse_sprite(Sprite* spr);
@@ -32,6 +27,8 @@ static inline void apply_movement_sprite(Sprite* spr, Vector2 move_vec) {
     spr->movement.x = move_vec.x;
     spr->movement.y = move_vec.y;
 }
+
+#define STEP_COUNT  2
 
 void update_sprite(Sprite* spr, Level* level, Tilemap* tilemap) {
     resolve_movement_sprite(spr);
@@ -67,13 +64,6 @@ void draw_sprite(Sprite* spr) {
     DrawRectangleRec(rec, GREEN);
 }
 
-void focus_camera_sprite(Sprite* spr, Camera2D* cam) {
-    cam->target = (Vector2){ spr->position.x, spr->position.y };
-    cam->offset = (Vector2){ GetScreenWidth() * 0.5f, GetScreenHeight() * 0.7f };
-    cam->rotation = 0.f;
-    cam->zoom = 1.f;
-}
-
 
 static void resolve_friction_sprite(Sprite* spr, float tile_friction) {
     float fric_coeff = tile_friction * spr->velocity.x * PHYSICS_FIXED_STEP_TIME;
@@ -97,6 +87,9 @@ static void resolve_impulse_sprite(Sprite* spr) {
         spr->horizontal_force = 1;
 }
 
+#define ACCELERATION_TIME   .15f     // Time it takes to accelerate to max speed
+#define MAX_MASS            50.f    // Mass where movement stops
+
 static void resolve_movement_sprite(Sprite* spr) {
     if (spr->movement.x) {
         float max_horizontal_speed = -spr->mass + MAX_MASS;
@@ -110,6 +103,8 @@ static void resolve_movement_sprite(Sprite* spr) {
         spr->horizontal_force = 1;
     }
 }
+
+#define COLLISION_OFFSET    0.0001f     // Small offset from colliding tile so sprite doesn't get stuck in wall
 
 static int collision_step_x_sprite(Sprite* spr, Level* level, Tilemap* tilemap, float future_x) {
     int collision_detected = 0;

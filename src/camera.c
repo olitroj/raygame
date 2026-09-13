@@ -1,5 +1,7 @@
 #include "camera.h"
 
+#include "globals.h"
+
 void set_target_camera(MyCam* cam, Vector2 target) {
     cam->cam_obj.target = target;
     cam->target = NULL;
@@ -17,7 +19,7 @@ void set_persistent_target_camera(MyCam* cam, Vector2* target, float lerp_speed)
 #define CAMERA_MIN_LAG      1.f // How far away before camera snaps onto target
 
 void update_camera(MyCam* cam) {
-    cam->cam_obj.offset = (Vector2){ GetScreenWidth() * 0.5f, GetScreenHeight() * 0.5f };
+    cam->cam_obj.offset = (Vector2){ GetScreenWidth() * CAMERA_X, GetScreenHeight() * CAMERA_Y };
     if (cam->target != NULL) {
         if (cam->lerp_speed) {
             float diff_x = cam->target->x - cam->cam_obj.target.x;

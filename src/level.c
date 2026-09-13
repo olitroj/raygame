@@ -9,6 +9,9 @@ extern const unsigned char _binary_assets_l_level0_start[];
 extern const unsigned char _binary_assets_l_level0_end[];
 
 int load_level(Level* level, const unsigned char* ptr, const unsigned char* end_ptr) {
+    if (level == NULL)
+        return -1;
+        
     Level l = {0};
     l.bytes = ptr;
 
