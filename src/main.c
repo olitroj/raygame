@@ -23,7 +23,7 @@ int main(void)
     create_sprite(&plr, 13.f, l.start_x * l.tile_size, l.start_y * l.tile_size, 50.f, 50.f);
     Cam cam = {0};
     set_persistent_target_camera(&cam, &(plr.position), 25.f);
-    set_offset_camera(&cam, GetScreenWidth() / 2.f, GetScreenHeight() / 2.f);
+    set_offset_camera(&cam, GetScreenWidth() * .5f, GetScreenHeight() * .6f);
 
     float accumulator = 0.f;
 
@@ -36,7 +36,7 @@ int main(void)
     {
         if (IsKeyPressed(KEY_F11)) {
             ToggleBorderlessWindowed();
-            set_offset_camera(&cam, GetScreenWidth() / 2.f, GetScreenHeight() / 2.f);
+            set_offset_camera(&cam, GetScreenWidth() * .5f, GetScreenHeight() * .6f);
         }
 
         if (IsKeyPressed(KEY_V)) {
