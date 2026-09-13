@@ -4,7 +4,7 @@
 #include "tilemap.h"
 
 typedef struct level_s {
-    unsigned char level_id, tilemap_id;
+    unsigned char tilemap_id;
     const char* name;
     unsigned short width, height;
     unsigned short start_x, start_y;
