@@ -15,12 +15,19 @@ int main(void)
 
     Level l = {0};
     load_level_from_bin(&l, 0);
+    float level_size_x = l.width * l.tile_size;
+    float level_size_y = l.height * l.tile_size;
+
     Tilemap t = {0};
     load_tilemap_from_bin(&t, l.tilemap_id);
-    Texture2D backdrop;
+
+    Backdrop backdrop = {0};
     load_backdrop_from_bin(&backdrop, 0);
+    scale_backdrop(&backdrop, level_size_x, level_size_y, GetCurrentMonitor());
+
     Sprite plr = {0};
     create_sprite(&plr, 13.f, l.start_x * l.tile_size, l.start_y * l.tile_size, 50.f, 50.f);
+
     Cam cam = {0};
     set_persistent_target_camera(&cam, &(plr.position), 25.f);
     set_offset_camera(&cam, GetScreenWidth() * .5f, GetScreenHeight() * .6f);
@@ -76,11 +83,17 @@ int main(void)
 
         // Rendering
         update_camera(&cam);
+
+        float cam_from_level_center_x, cam_from_level_center_y;
+        get_current_position_camera(&cam, &cam_from_level_center_x, &cam_from_level_center_y);
+        cam_from_level_center_x -= level_size_x/2.f;
+        cam_from_level_center_y -= level_size_y/2.f;
+
         BeginDrawing();
-            ClearBackground(RAYWHITE);
+            ClearBackground(SKYBLUE);
 
             BeginMode2D(cam.cam_obj);
-                draw_backdrop(&backdrop, (Vector2){ l.width * l.tile_size / 2.f, l.height * l.tile_size / 2.f }, cam.cam_obj.target);
+                draw_backdrop(&backdrop, cam_from_level_center_x, cam_from_level_center_y);
                 draw_sprite(&plr);
                 draw_level(&l, &t);
             EndMode2D();

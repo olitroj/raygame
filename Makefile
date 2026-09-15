@@ -46,7 +46,7 @@ assets/t_%: assets/tilemaps/%
 
 bin/b_%$(OBJ_EXT): assets/b_% | bin
 	objcopy -I binary -O $(EXEC) -B i386:x86-64 $< $@
-assets/b_%: assets/backdrops/%.png
+assets/b_%: assets/backdrops/%
 	python3 scripts/compile_backdrop.py $< assets
 
 start:
