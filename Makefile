@@ -23,6 +23,9 @@ ifeq ($(BUILD),debug)
 	CFLAGS += -g -O0 -DDEBUG
 else ifeq ($(BUILD),release)
 	CFLAGS += -O2
+	ifeq ($(PLATFORM),windows)
+		CFLAGS += -mwindows
+	endif
 endif
 
 LEVEL_PATHS	:= $(addsuffix $(OBJ_EXT),$(addprefix bin/l_,$(LEVELS)))
