@@ -2,7 +2,6 @@
 #define CAMERA
 
 #include "raylib.h"
-#include "sprite.h"
 
 typedef struct camera_s {
     Vector2* target;

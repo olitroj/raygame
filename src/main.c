@@ -1,13 +1,13 @@
 #include "raylib.h"
 
+#include "globals.h"
+
 #include "level.h"
 #include "tilemap.h"
 #include "sprite.h"
 #include "controller.h"
 #include "camera.h"
 #include "backdrop.h"
-
-#include "globals.h"
 
 int main(void)
 {

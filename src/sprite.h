@@ -2,7 +2,6 @@
 #define SPRITE
 
 #include "level.h"
-#include "tilemap.h"
 #include "raylib.h"
 
 typedef struct sprite_s {
@@ -19,6 +18,8 @@ typedef struct sprite_s {
     char horizontal_force; 
     
 } Sprite;
+
+#include "tilemap.h"
 
 static inline void create_sprite(Sprite* spr, float mass, float pos_x, float pos_y, float width, float height);
 static inline void apply_force_sprite(Sprite* spr, Vector2 force);

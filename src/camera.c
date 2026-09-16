@@ -1,7 +1,5 @@
 #include "camera.h"
 
-#include "globals.h"
-
 static inline void set_target_camera(Cam* cam, float target_x, float target_y) {
     cam->cam_obj.target.x = target_x;
     cam->cam_obj.target.y = target_y;

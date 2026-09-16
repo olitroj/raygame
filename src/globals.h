@@ -3,6 +3,8 @@
 
 #define PHYSICS_FIXED_STEP_TIME     1/60.f
 
+#define NULL    ((void *)0)
+
 #ifdef DEBUG
 #define _POSIX_C_SOURCE 200809L
 #include <stdio.h>

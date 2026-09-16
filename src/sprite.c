@@ -1,7 +1,5 @@
 #include "sprite.h"
 
-#include "globals.h"
-
 static void resolve_friction_sprite(Sprite* spr, float tile_friction);
 static void resolve_force_sprite(Sprite* spr);
 static void resolve_impulse_sprite(Sprite* spr);

@@ -1,8 +1,6 @@
 #ifndef LEVEL
 #define LEVEL
 
-#include "tilemap.h"
-
 typedef struct level_s {
     unsigned char tilemap_id;
     const char* name;
@@ -14,6 +12,8 @@ typedef struct level_s {
 
     const unsigned char* bytes;
 } Level;
+
+#include "tilemap.h"
 
 int load_level(Level* level, const unsigned char* ptr, const unsigned char* end_ptr);
 int load_level_from_file(Level* level, const char* file_name);

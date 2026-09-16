@@ -3,8 +3,6 @@
 
 #include "raylib.h"
 
-#include "sprite.h"
-
 #define MAX_BACKDROP_LAYERS 4
 
 typedef struct backdrop_layer_s {

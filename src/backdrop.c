@@ -1,7 +1,6 @@
 #include "backdrop.h"
 
 #include "read.h"
-#include "globals.h"
 
 extern const unsigned char _binary_assets_b_sunny_start[];
 extern const unsigned char _binary_assets_b_sunny_end[];
