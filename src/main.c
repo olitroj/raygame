@@ -2,12 +2,10 @@
 
 #include "globals.h"
 
-#include "level.h"
-#include "tilemap.h"
+#include "assets.h"
 #include "sprite.h"
 #include "controller.h"
 #include "camera.h"
-#include "backdrop.h"
 
 int main(void)
 {
@@ -110,10 +108,6 @@ int main(void)
     return 0;
 }
 
-#include "level.c"
-#include "tilemap.c"
 #include "sprite.c"
 #include "controller.c"
-#include "read.c"
 #include "camera.c"
-#include "backdrop.c"

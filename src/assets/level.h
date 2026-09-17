@@ -15,7 +15,6 @@ typedef struct level_s {
 
 #include "tilemap.h"
 
-int load_level(Level* level, const unsigned char* ptr, const unsigned char* end_ptr);
 int load_level_from_file(Level* level, const char* file_name);
 void free_level_from_file(Level* level);
 int load_level_from_bin(Level* level, int level_no);

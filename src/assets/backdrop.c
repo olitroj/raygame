@@ -44,7 +44,7 @@ void scale_backdrop(Backdrop* backdrop, float level_size_x, float level_size_y, 
     }
 }
 
-#define BACKDROP_MOVEMENT   .99f
+#define BACKDROP_VERTICAL_PARALLAX  .99f
 
 void draw_backdrop(Backdrop* backdrop, float cam_from_level_center_x, float cam_from_level_center_y) {
     if (backdrop == NULL)
@@ -56,8 +56,8 @@ void draw_backdrop(Backdrop* backdrop, float cam_from_level_center_x, float cam_
         unsigned char scale = backdrop->scale;
 
         Vector2 position = {
-            backdrop->origin_x + cam_from_level_center_x * backdrop->layers[i].scaled_parallax,//(-parallax + 255) / 255.f,
-            backdrop->origin_y + cam_from_level_center_y * BACKDROP_MOVEMENT//(-parallax + 255) / 255.f
+            backdrop->origin_x + cam_from_level_center_x * backdrop->layers[i].scaled_parallax,
+            backdrop->origin_y + cam_from_level_center_y * BACKDROP_VERTICAL_PARALLAX
         };
         DrawTextureEx(layer, position, 0.f, scale, WHITE);
     }
