@@ -1,0 +1,6 @@
+{
+    "tiles": [
+        { "filename": "grass.png", "friction": 12, "collision": false },
+        { "filename": "dirt.png", "friction": 20, "collision": true }
+    ]
+}

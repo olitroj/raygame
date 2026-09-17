@@ -1,4 +1,0 @@
-sun.png 10
-clouds.png 40
-mountains.png 20
-ground.png 60

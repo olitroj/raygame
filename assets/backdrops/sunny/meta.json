@@ -1,0 +1,8 @@
+{
+    "layers": [
+        { "filename": "sun.png", "parallax": 10 },
+        { "filename": "clouds.png", "parallax": 40 },
+        { "filename": "mountains.png", "parallax": 20 },
+        { "filename": "ground.png", "parallax": 60 }
+    ]
+}
