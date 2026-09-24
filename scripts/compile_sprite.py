@@ -1,0 +1,40 @@
+from sys import argv
+import os
+import json
+
+if len(argv) != 3:
+    print('ERROR: compile_sprite.py <input-dir> <output-dir>')
+    exit()
+
+dir_path = argv[1]
+out_dir = argv[2]
+
+# Removes slash at the end, it causes problems
+if dir_path[-1] == '/':
+    dir_path = dir_path[:-1]
+if out_dir[-1] == '/':
+    out_dir = out_dir[:-1]
+
+sprite_name = os.path.basename(dir_path)
+buffer = bytearray([0xA0, 0x46])
+
+# Read meta file
+with open(f'{dir_path}/meta.json', 'r') as meta_file:
+    sprite = json.load(meta_file)
+    animations = sprite['animations']
+
+    for anim in animations:
+        # Read animation textures
+        anim_textures = anim['textures']
+        buffer.extend(len(anim_textures).to_bytes())
+
+        # Read texture files
+        for filename in anim_textures:
+            with open(f'{dir_path}/{filename}', 'rb') as texture_file:
+                texture_bytes = texture_file.read()
+                buffer.extend(len(texture_bytes).to_bytes(4, 'little'))
+                buffer.extend(texture_bytes)
+
+# Write results to file
+with open(f'{out_dir}/s_{sprite_name}', 'wb') as sprite_file:
+    sprite_file.write(buffer)

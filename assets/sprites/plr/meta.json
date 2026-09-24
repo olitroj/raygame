@@ -1,0 +1,6 @@
+{
+    "animations": [
+        { "textures": [ "idle.png" ] },
+        { "textures": [ "walk_1.png", "walk_2.png" ] }
+    ]
+}
