@@ -3,6 +3,8 @@
 #include "globals.h"
 
 #include "assets/assets.h"
+#include "apis/apis.h"
+
 #include "sprite.h"
 #include "controller.h"
 #include "camera.h"

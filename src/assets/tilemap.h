@@ -1,12 +1,12 @@
 #ifndef ASSETS_TILEMAP
 #define ASSETS_TILEMAP
 
-#include "raylib.h"
+#include "../apis/apis.h"
 
 typedef struct tile_props_s {
     float friction;
     unsigned char solid;
-    Texture2D texture;
+    TextureHandle texture;
 } TileProps;
 
 typedef struct tilemap_s {
@@ -15,6 +15,6 @@ typedef struct tilemap_s {
 
 // int load_tilemap_from_file(Tilemap* tilemap, const char* file_name);
 // void free_tilemap_from_file(Tilemap* level);
-int load_tilemap_from_bin(Tilemap* tilemap, int tilemap_id);
+int load_tilemap_from_bin(Tilemap* tilemap, int tilemap_id, unsigned int tile_size);
 
 #endif

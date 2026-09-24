@@ -4,8 +4,8 @@ static void resolve_friction_sprite(Sprite* spr, float tile_friction);
 static void resolve_force_sprite(Sprite* spr);
 static void resolve_impulse_sprite(Sprite* spr);
 static void resolve_movement_sprite(Sprite* spr);
-static int collision_step_x_sprite(Sprite* spr, Level* level, Tilemap* tilemap, float future_x);
-static int collision_step_y_sprite(Sprite* spr, Level* level, Tilemap* tilemap, float future_y);
+static int collision_step_x_sprite(Sprite* spr, Level* level, float future_x);
+static int collision_step_y_sprite(Sprite* spr, Level* level, float future_y);
 
 static inline void create_sprite(Sprite* spr, float mass, float pos_x, float pos_y, float width, float height) {
     *spr = (Sprite){ mass, (Vector2){ width, height }, (Vector2){ pos_x, pos_y } };
@@ -44,9 +44,9 @@ void update_sprite(Sprite* spr, Level* level) {
         if (collision_x && collision_y)
             break;
         if (!collision_x)
-            collision_x = collision_step_x_sprite(spr, level, &(level->tilemap), spr->position.x + future_step_x);
+            collision_x = collision_step_x_sprite(spr, level, spr->position.x + future_step_x);
         if (!collision_y)
-            collision_y = collision_step_y_sprite(spr, level, &(level->tilemap), spr->position.y + future_step_y);
+            collision_y = collision_step_y_sprite(spr, level, spr->position.y + future_step_y);
     }
 
     spr->horizontal_force = 0; // reset flag
@@ -104,10 +104,10 @@ static void resolve_movement_sprite(Sprite* spr) {
 
 #define COLLISION_OFFSET    0.0001f     // Small offset from colliding tile so sprite doesn't get stuck in wall
 
-static int collision_step_x_sprite(Sprite* spr, Level* level, Tilemap* tilemap, float future_x) {
+static int collision_step_x_sprite(Sprite* spr, Level* level, float future_x) {
     int collision_detected = 0;
     unsigned int tile_size = level->tile_size;
-    TileProps* tileprops = tilemap->tile_props;
+    TileProps* tileprops = level->tilemap.tile_props;
 
     float spr_hwidth = spr->size.x / 2.f;
     float spr_hheight = spr->size.y / 2.f;
@@ -141,10 +141,10 @@ static int collision_step_x_sprite(Sprite* spr, Level* level, Tilemap* tilemap, 
     return collision_detected;
 }
 
-static int collision_step_y_sprite(Sprite* spr, Level* level, Tilemap* tilemap, float future_y) {
+static int collision_step_y_sprite(Sprite* spr, Level* level, float future_y) {
     int collision_detected = 0;
     unsigned int tile_size = level->tile_size;
-    TileProps* tileprops = tilemap->tile_props;
+    TileProps* tileprops = level->tilemap.tile_props;
 
     float spr_hwidth = spr->size.x / 2.f;
     float spr_hheight = spr->size.y / 2.f;

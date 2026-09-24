@@ -1,28 +1,33 @@
-#include <raylib.h>
-
 #include "../image.h"
 
-#define DEREF(var, type) (*(type *)var)
+#include <raylib.h>
 
-void create_image(ImageHandle handle, unsigned char* ptr, unsigned int size) {
-    DEREF(handle, Image) = LoadImageFromMemory(".png", ptr, size);
+struct image_handle_s { Image img; };
+struct texture_handle_s { Texture2D tex; };
+
+void create_image(ImageHandle* handle, const unsigned char* ptr, unsigned int size) {
+    handle->img = LoadImageFromMemory(".png", ptr, size);
 }
 
-void resize_image(ImageHandle handle, unsigned int width, unsigned int height) {
-    ImageResize(handle, width, height);
+void resize_image(ImageHandle* handle, unsigned int width, unsigned int height) {
+    ImageResize(&(handle->img), width, height);
 }
 
-void mirror_image(ImageHandle handle, int flip) {
+void mirror_image(ImageHandle* handle, int flip) {
     if (flip == 0) {
-        ImageFlipHorizontal(handle);
-        ImageFlipVertical(handle);
+        ImageFlipHorizontal(&(handle->img));
+        ImageFlipVertical(&(handle->img));
     } else if (flip < 0)
-        ImageFlipVertical(handle);
+        ImageFlipVertical(&(handle->img));
     else
-        ImageFlipHorizontal(handle);
+        ImageFlipHorizontal(&(handle->img));
 }
 
-void create_texture_from_image(ImageHandle handle, TextureHandle texture) {
-    DEREF(texture, Texture2D) = LoadTextureFromImage(DEREF(handle, Image));
-    UnloadImage(DEREF(handle, Image));
+void create_texture_from_image(ImageHandle* handle, TextureHandle* texture) {
+    texture->tex = LoadTextureFromImage(handle->img);
+    UnloadImage(handle->img);
+}
+
+void draw_texture(TextureHandle* texture, int pos_x, int pos_y) {
+    DrawTexture(texture->tex, pos_x, pos_y, WHITE);
 }

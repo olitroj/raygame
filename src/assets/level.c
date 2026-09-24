@@ -1,6 +1,5 @@
 #include "level.h"
 
-#include "raylib.h"
 #include "read.h"
 #include "extern.h"
 
@@ -51,7 +50,7 @@ static int load_level(Level* level, const unsigned char* ptr, const unsigned cha
 
     l.tiles = ptr;
 
-    if (load_tilemap_from_bin(&(l.tilemap), tilemap_id))
+    if (load_tilemap_from_bin(&(l.tilemap), tilemap_id, l.tile_size))
         return -1;
 
     *level = l;
@@ -94,8 +93,8 @@ void draw_level(Level* level) {
             if (tile_id == TILE_AIR)
                 continue;
 
-            Texture2D texture = level->tilemap.tile_props[tile_id].texture;
-            DrawTextureEx(texture, (Vector2){col*level->tile_size, row*level->tile_size}, 0.0f, (float)level->tile_size / (float)texture.width, WHITE);
+            TextureHandle texture = level->tilemap.tile_props[tile_id].texture;
+            draw_texture(&texture, col*level->tile_size, row*level->tile_size);
         }
     }
 }

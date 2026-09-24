@@ -3,9 +3,9 @@
 #include "read.h"
 #include "extern.h"
 
-static int load_tilemap(Tilemap* tilemap, const unsigned char* ptr, const unsigned char* end_ptr);
+static int load_tilemap(Tilemap* tilemap, unsigned int tile_size, const unsigned char* ptr, const unsigned char* end_ptr);
 
-static int load_tilemap(Tilemap* tilemap, const unsigned char* ptr, const unsigned char* end_ptr) {
+static int load_tilemap(Tilemap* tilemap, unsigned int tile_size, const unsigned char* ptr, const unsigned char* end_ptr) {
     if (tilemap == NULL)
         return -1;
 
@@ -37,8 +37,13 @@ static int load_tilemap(Tilemap* tilemap, const unsigned char* ptr, const unsign
             default: type = ".bmp";
         }
 
-        Image img = LoadImageFromMemory(type, ptr, image_size);
-        t.tile_props[i].texture = LoadTextureFromImage(img);
+        ImageHandle img;
+        create_image(&img, ptr, image_size);
+        resize_image(&img, tile_size, tile_size);
+
+        TextureHandle tex;
+        create_texture_from_image(&img, &tex);
+        t.tile_props[i].texture = tex;
         ptr += image_size;
         if (ptr > end_ptr)
             break;
@@ -64,12 +69,12 @@ static int load_tilemap(Tilemap* tilemap, const unsigned char* ptr, const unsign
 //     UnloadFileData((unsigned char*)level->bytes);
 // }
 
-int load_tilemap_from_bin(Tilemap* tilemap, int tilemap_id) {
+int load_tilemap_from_bin(Tilemap* tilemap, int tilemap_id, unsigned int tile_size) {
     if (tilemap == NULL)
         return -1;
 
     switch (tilemap_id) {
-        case 0: return load_tilemap(tilemap, _binary_assets_t_summer_start, _binary_assets_t_summer_end-1);
+        case 0: return load_tilemap(tilemap, tile_size, _binary_assets_t_summer_start, _binary_assets_t_summer_end-1);
         default: return -1;
     }
 }
