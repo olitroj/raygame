@@ -33,7 +33,8 @@ static int load_level(Level* level, const unsigned char* ptr, const unsigned cha
         return -1;
     l.gravity = (float)gravity;
 
-    if (read_byte(&ptr, end_ptr, &(l.tilemap_id)) == -1)
+    unsigned char tilemap_id;
+    if (read_byte(&ptr, end_ptr, &(tilemap_id)) == -1)
         return -1;
     if (read_byte(&ptr, end_ptr, &(l.tile_size)) == -1)
         return -1;
@@ -49,6 +50,9 @@ static int load_level(Level* level, const unsigned char* ptr, const unsigned cha
         return -1;
 
     l.tiles = ptr;
+
+    if (load_tilemap_from_bin(&(l.tilemap), tilemap_id))
+        return -1;
 
     *level = l;
     return 0;
@@ -80,8 +84,8 @@ int load_level_from_bin(Level* level, int level_no) {
     }
 }
 
-void draw_level(Level* level, Tilemap* tilemap) {
-    if (level == NULL || tilemap == NULL)
+void draw_level(Level* level) {
+    if (level == NULL)
         return;
 
     for (int row = 0; row < level->height; row++) {
@@ -90,7 +94,7 @@ void draw_level(Level* level, Tilemap* tilemap) {
             if (tile_id == TILE_AIR)
                 continue;
 
-            Texture2D texture = tilemap->tile_props[tile_id].texture;
+            Texture2D texture = level->tilemap.tile_props[tile_id].texture;
             DrawTextureEx(texture, (Vector2){col*level->tile_size, row*level->tile_size}, 0.0f, (float)level->tile_size / (float)texture.width, WHITE);
         }
     }

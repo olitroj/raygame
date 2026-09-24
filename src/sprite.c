@@ -28,7 +28,7 @@ static inline void apply_movement_sprite(Sprite* spr, Vector2 move_vec) {
 
 #define STEP_COUNT  2
 
-void update_sprite(Sprite* spr, Level* level, Tilemap* tilemap) {
+void update_sprite(Sprite* spr, Level* level) {
     resolve_movement_sprite(spr);
     resolve_force_sprite(spr);
     resolve_impulse_sprite(spr);
@@ -44,9 +44,9 @@ void update_sprite(Sprite* spr, Level* level, Tilemap* tilemap) {
         if (collision_x && collision_y)
             break;
         if (!collision_x)
-            collision_x = collision_step_x_sprite(spr, level, tilemap, spr->position.x + future_step_x);
+            collision_x = collision_step_x_sprite(spr, level, &(level->tilemap), spr->position.x + future_step_x);
         if (!collision_y)
-            collision_y = collision_step_y_sprite(spr, level, tilemap, spr->position.y + future_step_y);
+            collision_y = collision_step_y_sprite(spr, level, &(level->tilemap), spr->position.y + future_step_y);
     }
 
     spr->horizontal_force = 0; // reset flag

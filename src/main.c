@@ -16,9 +16,6 @@ int main(void)
     float level_size_x = l.width * l.tile_size;
     float level_size_y = l.height * l.tile_size;
 
-    Tilemap t = {0};
-    load_tilemap_from_bin(&t, l.tilemap_id);
-
     Backdrop backdrop = {0};
     load_backdrop_from_bin(&backdrop, 0);
     scale_backdrop(&backdrop, level_size_x, level_size_y, GetCurrentMonitor());
@@ -71,7 +68,7 @@ int main(void)
         while (accumulator > PHYSICS_FIXED_STEP_TIME) {
             //TIME_START(physics);
 
-            update_sprite(&plr, &l, &t);
+            update_sprite(&plr, &l);
             plr.impulse = (Vector2){0};
             accumulator -= PHYSICS_FIXED_STEP_TIME;
 
@@ -93,7 +90,7 @@ int main(void)
             BeginMode2D(cam.cam_obj);
                 draw_backdrop(&backdrop, cam_from_level_center_x, cam_from_level_center_y);
                 draw_sprite(&plr);
-                draw_level(&l, &t);
+                draw_level(&l);
             EndMode2D();
 
             DrawFPS(10, 10);
