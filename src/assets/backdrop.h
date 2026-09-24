@@ -1,5 +1,5 @@
-#ifndef BACKDROP
-#define BACKDROP
+#ifndef ASSETS_BACKDROP
+#define ASSETS_BACKDROP
 
 #include "raylib.h"
 

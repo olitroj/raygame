@@ -1,5 +1,5 @@
-#ifndef TILEMAP
-#define TILEMAP
+#ifndef ASSETS_TILEMAP
+#define ASSETS_TILEMAP
 
 #include "raylib.h"
 

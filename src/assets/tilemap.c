@@ -1,9 +1,7 @@
 #include "tilemap.h"
 
 #include "read.h"
-
-extern const unsigned char _binary_assets_t_summer_start[];
-extern const unsigned char _binary_assets_t_summer_end[];
+#include "extern.h"
 
 static int load_tilemap(Tilemap* tilemap, const unsigned char* ptr, const unsigned char* end_ptr);
 

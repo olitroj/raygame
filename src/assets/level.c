@@ -2,11 +2,9 @@
 
 #include "raylib.h"
 #include "read.h"
+#include "extern.h"
 
 #define TILE_AIR    255
-
-extern const unsigned char _binary_assets_l_level0_start[];
-extern const unsigned char _binary_assets_l_level0_end[];
 
 static int load_level(Level* level, const unsigned char* ptr, const unsigned char* end_ptr);
 

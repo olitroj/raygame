@@ -1,5 +1,5 @@
-#ifndef READ
-#define READ
+#ifndef ASSETS_READ
+#define ASSETS_READ
 
 const unsigned char* read_string(const unsigned char** ptr, const unsigned char* end_ptr);
 int read_byte(const unsigned char** ptr, const unsigned char* end_ptr, unsigned char* byte);

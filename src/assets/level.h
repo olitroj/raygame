@@ -1,5 +1,5 @@
-#ifndef LEVEL
-#define LEVEL
+#ifndef ASSETS_LEVEL
+#define ASSETS_LEVEL
 
 typedef struct level_s {
     unsigned char tilemap_id;

@@ -2,7 +2,7 @@
 
 #include "globals.h"
 
-#include "assets.h"
+#include "assets/assets.h"
 #include "sprite.h"
 #include "controller.h"
 #include "camera.h"

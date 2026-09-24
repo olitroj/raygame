@@ -1,9 +1,7 @@
 #include "backdrop.h"
 
 #include "read.h"
-
-extern const unsigned char _binary_assets_b_sunny_start[];
-extern const unsigned char _binary_assets_b_sunny_end[];
+#include "extern.h"
 
 static int load_backdrop(Backdrop* backdrop, const unsigned char* ptr, const unsigned char* end_ptr);
 
