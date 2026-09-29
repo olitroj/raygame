@@ -15,9 +15,7 @@ typedef struct level_s {
     const unsigned char* bytes;
 } Level;
 
-int load_level_from_file(Level* level, const char* file_name);
-void free_level_from_file(Level* level);
-int load_level_from_bin(Level* level, int level_no);
+int load_from_bin_level(Level* level, int level_no);
 void draw_level(Level* level);
 
 #endif

@@ -15,32 +15,32 @@ static int load_level(Level* level, const unsigned char* ptr, const unsigned cha
     l.bytes = ptr;
 
     unsigned char byte = 0;
-    if (read_byte(&ptr, end_ptr, &byte) == -1 || byte != 0xA0)
+    if (byte_read(&ptr, end_ptr, &byte) == -1 || byte != 0xA0)
         return -1;
-    if (read_byte(&ptr, end_ptr, &byte) == -1 || byte != 0x43)
+    if (byte_read(&ptr, end_ptr, &byte) == -1 || byte != 0x43)
         return -1;
 
-    if ((l.name = read_string(&ptr, end_ptr)) == NULL)
+    if ((l.name = string_read(&ptr, end_ptr)) == NULL)
         return -1;
-    if (read_word(&ptr, end_ptr, &(l.start_x)) == -1)
+    if (word_read(&ptr, end_ptr, &(l.start_x)) == -1)
         return -1;
-    if (read_word(&ptr, end_ptr, &(l.start_y)) == -1)
+    if (word_read(&ptr, end_ptr, &(l.start_y)) == -1)
         return -1;
         
     unsigned short gravity = 0;
-    if (read_word(&ptr, end_ptr, &(gravity)) == -1)
+    if (word_read(&ptr, end_ptr, &(gravity)) == -1)
         return -1;
     l.gravity = (float)gravity;
 
     unsigned char tilemap_id;
-    if (read_byte(&ptr, end_ptr, &(tilemap_id)) == -1)
+    if (byte_read(&ptr, end_ptr, &(tilemap_id)) == -1)
         return -1;
-    if (read_byte(&ptr, end_ptr, &(l.tile_size)) == -1)
+    if (byte_read(&ptr, end_ptr, &(l.tile_size)) == -1)
         return -1;
 
-    if (read_word(&ptr, end_ptr, &(l.width)) == -1)
+    if (word_read(&ptr, end_ptr, &(l.width)) == -1)
         return -1;
-    if (read_word(&ptr, end_ptr, &(l.height)) == -1)
+    if (word_read(&ptr, end_ptr, &(l.height)) == -1)
         return -1;
 
     int remaining_bytes = end_ptr + 1 - ptr;
@@ -50,30 +50,14 @@ static int load_level(Level* level, const unsigned char* ptr, const unsigned cha
 
     l.tiles = ptr;
 
-    if (load_tilemap_from_bin(&(l.tilemap), tilemap_id, l.tile_size))
+    if (load_from_bin_tilemap(&(l.tilemap), tilemap_id, l.tile_size))
         return -1;
 
     *level = l;
     return 0;
 }
 
-int load_level_from_file(Level* level, const char* file_name) {
-    if (level == NULL || file_name == NULL)
-        return -1;
-
-    int byte_cnt;
-    unsigned char* ptr = LoadFileData(file_name, &byte_cnt);
-    if (ptr == NULL || byte_cnt == 0)
-        return -1;
-
-    return load_level(level, ptr, ptr + byte_cnt - 1);
-}
-
-void free_level_from_file(Level* level) {
-    UnloadFileData((unsigned char*)level->bytes);
-}
-
-int load_level_from_bin(Level* level, int level_no) {
+int load_from_bin_level(Level* level, int level_no) {
     if (level == NULL)
         return -1;
 

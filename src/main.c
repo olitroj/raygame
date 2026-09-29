@@ -14,12 +14,12 @@ int main(void)
     InitWindow(800, 450, "Demo");
 
     Level l = {0};
-    load_level_from_bin(&l, 0);
+    load_from_bin_level(&l, 0);
     float level_size_x = l.width * l.tile_size;
     float level_size_y = l.height * l.tile_size;
 
     Backdrop backdrop = {0};
-    load_backdrop_from_bin(&backdrop, 0);
+    load_from_bin_backdrop(&backdrop, 0);
     scale_backdrop(&backdrop, level_size_x, level_size_y, GetCurrentMonitor());
 
     Sprite plr = {0};
@@ -51,7 +51,7 @@ int main(void)
 
         if (plr.position.y < (l.height + 15) * l.tile_size) {
             if (!freecam)
-                control_player(&plr);
+                player_control(&plr);
         } else if (!falling) {
             float cam_current_x, cam_current_y;
             get_current_position_camera(&cam, &cam_current_x, &cam_current_y);
@@ -59,7 +59,7 @@ int main(void)
             falling = 1;
         } 
         if (freecam)
-            control_freecam(&cam);
+            freecam_control(&cam);
 
         apply_force_sprite(&plr, (Vector2){ 0.f, plr.mass * l.gravity });
 

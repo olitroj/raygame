@@ -4,7 +4,7 @@
 
 #define SPRITE_JUMP_STRENGTH    1000.f  // Magnitude of upwards jump force
 
-void control_player(Sprite* plr) {
+void player_control(Sprite* plr) {
     Vector2 movement = {0};
     Vector2 impulse = {0};
 
@@ -35,7 +35,7 @@ void control_player(Sprite* plr) {
 
 #define FREECAM_SPEED   2000.f
 
-void control_freecam(Cam* cam) {
+void freecam_control(Cam* cam) {
     float target_x, target_y;
     get_current_position_camera(cam, &target_x, &target_y);
 

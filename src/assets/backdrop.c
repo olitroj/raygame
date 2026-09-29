@@ -13,7 +13,7 @@ static inline float get_backdrop_height(Backdrop* backdrop) {
     return backdrop->layers[0].texture.height;
 }
 
-int load_backdrop_from_bin(Backdrop* backdrop, int backdrop_id) {
+int load_from_bin_backdrop(Backdrop* backdrop, int backdrop_id) {
     if (backdrop == NULL)
         return -1;
 
@@ -67,20 +67,20 @@ static int load_backdrop(Backdrop* backdrop, const unsigned char* ptr, const uns
         return -1;
 
     unsigned char byte = 0;
-    if (read_byte(&ptr, end_ptr, &byte) == -1 || byte != 0xA0)
+    if (byte_read(&ptr, end_ptr, &byte) == -1 || byte != 0xA0)
         return -1;
-    if (read_byte(&ptr, end_ptr, &byte) == -1 || byte != 0x45)
+    if (byte_read(&ptr, end_ptr, &byte) == -1 || byte != 0x45)
         return -1;
 
     for (int i = 0; i < MAX_BACKDROP_LAYERS; i++) {
-        if (read_byte(&ptr, end_ptr, &(backdrop->layers[i].parallax)) == -1)
+        if (byte_read(&ptr, end_ptr, &(backdrop->layers[i].parallax)) == -1)
             return -1;
 
         unsigned char image_type = 0;
-        if (read_byte(&ptr, end_ptr, &image_type) == -1)
+        if (byte_read(&ptr, end_ptr, &image_type) == -1)
             return -1;
         unsigned int image_size = 0;
-        if (read_int(&ptr, end_ptr, &image_size) == -1)
+        if (int_read(&ptr, end_ptr, &image_size) == -1)
             return -1;
 
         const char* type;

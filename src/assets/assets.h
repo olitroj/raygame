@@ -1,10 +1,5 @@
-#ifndef ASSETS_ASSETS
-#define ASSETS_ASSETS
-
-#include "level.h"
-#include "tilemap.h"
-#include "backdrop.h"
-#include "read.h"
+#ifndef ASSETS
+#define ASSETS
 
 #include "level.c"
 #include "tilemap.c"

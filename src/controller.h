@@ -4,7 +4,7 @@
 #include "sprite.h"
 #include "camera.h"
 
-void control_player(Sprite* plr);
-void control_freecam(Cam* cam);
+void player_control(Sprite* plr);
+void freecam_control(Cam* cam);
 
 #endif
